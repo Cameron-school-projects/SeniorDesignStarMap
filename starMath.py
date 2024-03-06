@@ -1,5 +1,5 @@
 import math
-
+import datetime
 #constants :/
 RADS = math.pi / 180
 DEGS = 180 / math.pi
@@ -17,13 +17,23 @@ def mod2Pi(degree):
         A = 2*math.pi + A
     return A
 
+#converts julian date to normal date
+#assumes JD is a string representation of a julian date
 def getDate(JD):
-    #converts julian date to normal date
-    return
+    #split to get year and day of year separably 
+    dateParts = JD.split("-")
+    dateYear = dateParts[0]
+    dayOfYear = dateParts[1]
+    #date will be time different between jan 1st of that year to passed in day of year
+    return (datetime.datetime(dateYear, 1, 1) + datetime.timedelta(dayOfYear - 1))
 
+#converts date to julian time
+#assumes that date is a string representing current date in mm/dd/yy or mm/dd/yyyy format 
 def getJD(date):
-    #converts date to julian time
-    return
+    dateToParse = datetime.strptime(date, '%m/%d/%Y')
+    dayOfYear = dateToParse.timetuple().tm_yday
+    year = dateToParse.year
+    return str(year)+"-"+str(dayOfYear)
 
 def getGST(lat, lon, h, m, s, day, month, year):
     #returns greenwich sidereal time

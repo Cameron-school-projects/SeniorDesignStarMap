@@ -1,7 +1,7 @@
 import sqlite3
 from dbHandler import *
 import os
-
+from dbHandler import  *
 def checkDB():
     try:
         # Connect to DB and create a cursor

@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 pyramid = "*"
+tzwhere = "*"
+pytz = "*"
 
 [dev-packages]
 

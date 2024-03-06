@@ -29,9 +29,13 @@ def getGST(lat, lon, h, m, s, day, month, year):
     #returns greenwich sidereal time
     return
 
-def getLST(time):
+def getLST(gstTime, lon):
+    #input gst time
+    #lon is negative if west, positive if east
+    offset = lon/15
+    localTime = (gstTime + offset) % 24.0
     #return local sidereal time
-    return
+    return localTime
 
 def getMST(time):
     #returns mean sidereal time
@@ -106,13 +110,39 @@ def getPlanetRADec(planetData, earthData, JD):
     
     return ra, dec
 
-def getPlanetAzEl(lat, lon, ra, dec):
+def getPlanetAzEl(lat, lon, ra, dec, time):
     #not sure if this is different from star RA and Dec but we'll see I guess
     #takes in latitude, longitude, and ra and dec in degrees
     #returns planet azimuth and elevation
+    if (lat<0):
+        lat *= -1
+    if lon < 0:
+        lon *= -1
+    A = getMST(time) - ra   #this is a vague time object. We'll figure it out later
+    if A<0:
+        A += 360
+    decRad = dec * RADS
+    latRad = lat * RADS
+    hRad = lat*RADS
 
+    #find altitude in radians, which I'm assuming is also elevation
+    sinEl = (math.sin(decRad) * math.sin(latRad)) + (math.cos(decRad) * math.cos(latRad) * math.cos(hRad))
+    el = math.asin(sinEl)
 
-    return
+    #calculate azimuth in radians
+    try:
+        cosAz = (math.sin(decRad) - math.sin(el) * math.sin(latRad)) / (math.cos(el) * math.cos(latRad))
+        az = math.acos(cosAz)
+    except:
+        az = 0
+    
+    el *= DEGS
+    az *= DEGS
+
+    if(math.sin(hRad>0)):
+        az = 360-az
+
+    return az, el
 
 def raDegToHMS(degree):
     #converts RA from degrees to hours:minutes:seconds

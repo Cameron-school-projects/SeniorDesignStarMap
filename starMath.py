@@ -160,15 +160,54 @@ def decDegToDMS(degree):
     s = (((degree - d)*60.0)-m)*60.0 
     return d, m, s
 
-def getMoonPhase(time, julianDate, location):
+def getMoonPhase(year):
     #gets moon phase
-    #moon math
-    #return the phase based on a threshold and display the proper png based on that
-    return
+    #takes the date as a float, where Feb 1, 2009 is 2009.087
+    k = (year-1900.0)*12.3685
+    #T = k / 1236.85
+    #i have no idea what the math says so I guess this is happening now
+    #124.2322 is a full moon --> 0.566
+    #124.1913 is a new moon --> 0.060
 
-def getMoonLocation(T):
+    phase = k%1
+    if phase <= 0.1 or phase>.93:     #new moon
+        return 0
+    elif phase <= 0.19:   #waxing crescent
+        return 1
+    elif phase <= .32:   #waxing quarter
+        return 2
+    elif phase <= .45:
+        return 3
+    elif phase <= .55:   #full moon
+        return 4
+    elif phase <= .67:
+        return 5
+    elif phase <= .81:   #waning quarter
+        return 6
+    elif phase <= .93:    #waning crescent
+        return 7
+
+    #return the phase based on a threshold
+    #if 8, something went wrong
+    return 8
+
+def getMoonLocation(date):
     #gets moon's location
-    #T is explained in the doc
+    #input date
     #those are some ugly formulas :((
+    T = (getJD(date)-2415020.0) / 36525
+
+    moonL = 270.434164 + 481267.8831*T
+    sunM = 358.475833 + 35999.0498*T
+    moonM = 296.104608 + 477198.8491*T
+    moonD = 350.737486 + 445267.1142*T
+    F = 11.250889 + 483202.0251*T
+
+    e = 1 - 0.002495*T - 0.00000752*T*T
+
+    moonLon = moonL + (6.288750 * math.sin(moonM*RADS)) + (1.274018 * math.sin((2*moonD - moonM)*RADS)) + (0.658309 * math.sin((2*moonD)*RADS)) + (0.213616 * math.sin((2*moonM)*RADS)) - (0.185596 * math.sin((sunM)*RADS) * e) - (0.114336 * math.sin(2*F*RADS)) + (0.058793 * math.sin((2*moonD - 2*moonM)*RADS)) + (0.057212 * math.sin((2*moonD - sunM - moonM)*RADS) * e) + (0.053320 * math.sin((2*moonD + moonM)*RADS)) + (0.045874 * math.sin((2*moonD - sunM) * RADS) * e)
+    moonLat = (5.128189 * math.sin(F*RADS)) + 0.280606 * math.sin((moonM + F)*RADS) + (0.277693 * math.sin((moonM - F)*RADS)) + (0.173238 * math.sin((2*moonD - F)*RADS)) + (0.055413 * math.sin((2*moonD + F - moonM)*RADS)) + (0.046272 * math.sin((2*moonD - F - moonM)*RADS)) + (0.032573 * math.sin((2*moonD + F)*RADS)) + (0.017198 * math.sin((2*moonM + F)*RADS)) + (0.009267 * math.sin((2*moonD + moonM - F)*RADS)) + (0.008823 * math.sin((2*moonM - F)*RADS))
+
     #return moon's geocentric longitude and latitude
-    return
+    return moonLon, moonLat
+

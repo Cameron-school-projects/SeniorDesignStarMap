@@ -3,6 +3,9 @@ import datetime
 import pytz
 from tzwhere import tzwhere
 from pytz import utc
+from astropy.coordinates import EarthLocation
+from astropy.time import Time
+from astropy import units as u
 #constants :/
 RADS = math.pi / 180
 DEGS = 180 / math.pi
@@ -50,13 +53,21 @@ def getGST(lat, lon, h, m, s, day, month, year):
     oldTimeZone = pytz.timezone(timezone_str)
     return oldTimeZone.localize(currentDate).astimezone( utc )
 
-def getLST(time):
-    #return local sidereal time
-    return
+#return local sidereal time 
+#converts from UTC/GMT
+def getLST(time,lat,lon):
+    observing_location = EarthLocation(lat=46.57*u.deg, lon=7.65*u.deg)
+    observing_time = Time(time, scale='utc', location=observing_location)
+    LST = observing_time.sidereal_time('apparent')
+    return LST
 
+#returns mean sidereal time
+#converts from UTC/GMT
 def getMST(time):
-    #returns mean sidereal time
-    return
+    observing_location = EarthLocation(lat=46.57*u.deg, lon=7.65*u.deg)
+    observing_time = Time(time, scale='utc', location=observing_location)
+    MST = observing_time.sidereal_time('mean')
+    return MST
 
 def getStarAzEl(ra, dec, time, lat, long):
     #ra, dec, and sidereal time passed in

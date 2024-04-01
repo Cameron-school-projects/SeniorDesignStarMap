@@ -8,5 +8,6 @@ def getStarDataRoute(request):
     lon = request.params['lon']
     date = request.params['date']
     time = request.params['time']
-    makeMap(time,date,lat,lon)
+    bufToReturn = makeMap(time,date,lat,lon)
+    return Response(bufToReturn)
     

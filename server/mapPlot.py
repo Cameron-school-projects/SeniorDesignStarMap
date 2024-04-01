@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 from starMath import *
 import matplotlib.patches as patches
+import io
+from base64 import b64encode
+from PIL import Image
 def getStarInfo():
     #I assume this will be needed to hold some info? Could be useless/extraneous idk
     return
@@ -23,8 +26,10 @@ def drawMap(allStars):
     ax.set_xlim(-1, 1)
     ax.set_ylim(-1, 1)
     plt.axis('off')
+    buf = io.BytesIO()
+    plt.savefig(buf,format="png")
     plt.show()
     #the horrors
     #create and save png
     #returns png
-    return
+    return b64encode(buf.getvalue()).decode()

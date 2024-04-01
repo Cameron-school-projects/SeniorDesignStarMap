@@ -61,5 +61,5 @@ def makeMap(time, date, lat,lon):
     #run map creation function
     #save map
     #return map
-    return
+    return map
 

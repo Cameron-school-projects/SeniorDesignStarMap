@@ -48,7 +48,11 @@ def makeMap(time, date, lat,lon):
         tempRA,tempDec = getStarAzEl(star[7],star[8],siderealTime,latDec,lonDec)
         allStars['x'].append(tempRA)
         allStars['y'].append(tempDec)
-        allStars['mag'].append(star[9])
+        #suns magnitude is so big we need to diminish it 
+        if(star[5]=='Sol'):
+            allStars['mag'].append((3 ** ( star[9]/ -2.5)))
+        else:
+            allStars['mag'].append(100*10**(star[9]/-2.5))
         allStars['label'].append(star[5])
 
     map = drawMap(allStars)

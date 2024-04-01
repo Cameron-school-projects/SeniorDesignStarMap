@@ -5,7 +5,7 @@ def getStarInfo():
     #I assume this will be needed to hold some info? Could be useless/extraneous idk
     return
 
-def drawMap(allStars,):
+def drawMap(allStars):
     chart_size = 10
     fig, ax = plt.subplots(figsize=(chart_size, chart_size))
     border = patches.Circle((0, 0), 1, color='navy', fill=True)

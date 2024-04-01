@@ -1,7 +1,9 @@
 import math
 import datetime
+from datetime import datetime
 import pytz
-from tzwhere import tzwhere
+from timezonefinder import TimezoneFinder
+from datetime import timedelta
 from pytz import utc
 from astropy.coordinates import EarthLocation
 from astropy.time import Time
@@ -32,7 +34,7 @@ def getDate(JD):
     dateYear = dateParts[0]
     dayOfYear = dateParts[1]
     #date will be time different between jan 1st of that year to passed in day of year
-    return (datetime.datetime(dateYear, 1, 1) + datetime.timedelta(dayOfYear - 1))
+    return (datetime(dateYear, 1, 1) + datetime.timedelta(dayOfYear - 1))
 
 #converts date to julian time
 #assumes that date is a string representing current date in mm/dd/yy or mm/dd/yyyy format 
@@ -42,24 +44,46 @@ def getJD(date):
     dayOfYear = dateToParse.timetuple().tm_yday
     year = dateToParse.year
     return str(year)+"-"+str(dayOfYear)
+#returns GST for current time,
+#expects localTime to be a datetime object
+def getGST(localTime):
+    epoch = datetime(2004,1,1)
+    timeDelta = localTime-epoch
+    secondsToDeduct = timeDelta.days* 236
+    #integer division
+    hours = timeDelta.seconds//3600
+    secondsToDeduct = secondsToDeduct + (hours-10*(hours))
+    return (localTime - timedelta(seconds=secondsToDeduct))
 
-#returns greenwich sidereal time
-#returns datetime object
-def getGST(lat, lon, h, m, s, day, month, year):
+def convertLatAndLong(location):
+    multiplier = 1 if location[-1] in ['N', 'E'] else -1
+    return multiplier * sum(float(x) / 60 ** n for n, x in enumerate(location[:-1].split('-')))
 
-    currentDate = datetime.datetime(year,month,day,h,m,s )
-    timeZoneConverter = tzwhere.tzwhere()
-    timezone_str = timeZoneConverter.tzNameAt(lat, lon)
+#returns UTC
+#returns datetime object    
+def getUTC(lat, lon, h, m, s, day, month, year):
+    currentDate = datetime(year,month,day,h,m,s )
+    timeZoneConverter = TimezoneFinder()  
+    timezone_str = timeZoneConverter.timezone_at(lng=lon, lat=lat)
     oldTimeZone = pytz.timezone(timezone_str)
     return oldTimeZone.localize(currentDate).astimezone( utc )
 
 #return local sidereal time 
-#converts from UTC/GMT
-def getLST(time,lat,lon):
-    observing_location = EarthLocation(lat=46.57*u.deg, lon=7.65*u.deg)
-    observing_time = Time(time, scale='utc', location=observing_location)
-    LST = observing_time.sidereal_time('apparent')
-    return LST
+#expects time to be in GST
+def getLST(time,lon):
+    dividedLon = lon/15
+    hours = int(dividedLon)
+    minutes = (dividedLon*60) % 60
+    seconds = (dividedLon*3600) % 60
+    #check if long is west
+    if(lon<0):
+        LST = time - timedelta(hours=hours,minutes=minutes,seconds=seconds)
+    else:
+        LST = time + timedelta(hours=hours,minutes=minutes,seconds=seconds)
+    lstNumeric = int(LST.hour)
+    lstNumeric = lstNumeric+ (int(LST.minute)/10)
+    lstNumeric = lstNumeric+ (int(LST.second)/100)
+    return lstNumeric
 
 #returns mean sidereal time
 #converts from UTC/GMT
@@ -73,8 +97,8 @@ def getStarAzEl(ra, dec, time, lat, long):
     #ra, dec, and sidereal time passed in
     #return azimuth and elevation
     h = time-ra
-    az = math.arctan(-(math.sin(h) * math.cos(dec))/(math.cos(lat)*math.sin(dec) - math.sin(lat)*math.cos(dec)*math.cos(h)))
-    el = math.arcsin(math.sin(lat)*math.sin(dec) + math.cos(lat)*math.cos(dec)*math.cos(h))
+    az = math.atan(-(math.sin(h) * math.cos(dec))/(math.cos(lat)*math.sin(dec) - math.sin(lat)*math.cos(dec)*math.cos(h)))
+    el = math.asin(math.sin(lat)*math.sin(dec) + math.cos(lat)*math.cos(dec)*math.cos(h))
     return az, el
 
 def getOrbitalElements(planetData, JD):

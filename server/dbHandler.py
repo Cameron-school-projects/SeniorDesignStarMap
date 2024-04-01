@@ -55,3 +55,19 @@ def close(connectionName, cursorName = False):
     if connectionName:
         connectionName.close()
         print("\nSQLite Connection closed")
+#When returning, python only returns values
+#the corresponding attributes are:
+        #allStars[0] = id
+        #allStars[1] = hip
+        #allStars[2] = HD
+        #allStars[3] = HR
+        #allStars[4] = Gliese
+        #allStars[5] = properName
+        #allStars[6] = bayerflamesteed
+        #allStars[7] = RA
+        #allStars[8] = dec
+        #allStars[9] = magnitude
+def getAllStars():
+    #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
+    allStars = cursor.execute("SELECT * FROM stars")
+    return allStars.fetchall()

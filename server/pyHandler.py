@@ -1,7 +1,12 @@
 import sqlite3
 from dbHandler import *
 import os
+from datetime import datetime
+import datetime
 from dbHandler import  *
+from starMath import *
+from mapPlot import *
+import numpy as np
 def checkDB():
     try:
         # Connect to DB and create a cursor
@@ -28,10 +33,29 @@ def checkDB():
         close(connection)
         return
     
-def makeMap(time, date, location):
+def makeMap(time, date, lat,lon):
+    allStars = {'x':[],'y':[],'mag':[],'label':[]}
+    dateAndTime = str(date+" "+time)
+    currentDate = datetime.strptime(dateAndTime,'%m/%d/%Y %I:%M%p')
+    latDec = convertLatAndLong(lat)
+    lonDec = convertLatAndLong(lon)
+    GSTime = getGST(currentDate)
+    GMTime = getUTC(latDec,lonDec,currentDate.hour,currentDate.minute,currentDate.second,currentDate.day,currentDate.month,currentDate.year)
+    siderealTime = getLST(GSTime,lonDec)
+    allStarData = getAllStars()
+    for star in allStarData:
+        #pass in RA and Dec
+        tempRA,tempDec = getStarAzEl(star[7],star[8],siderealTime,latDec,lonDec)
+        allStars['x'].append(tempRA)
+        allStars['y'].append(tempDec)
+        allStars['mag'].append(star[9])
+        allStars['label'].append(star[5])
+
+    map = drawMap(allStars)
     #pass in time, date, and location
     #run math commands
     #run map creation function
     #save map
     #return map
     return
+

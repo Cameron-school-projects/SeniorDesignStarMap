@@ -21,8 +21,11 @@ def drawMap(allStars):
     for col in ax.collections:
         col.set_clip_path(horizon)
     #add labels
+    # footnoteText = ""
     # for i, txt in enumerate(allStars['label']):
-    #     ax.annotate(txt, (allStars['x'][i], allStars['y'][i]))
+    #     ax.annotate(str(i), (allStars['x'][i], allStars['y'][i]),color="white")
+    #     footnoteText = footnoteText+str(txt)+"\n"
+    # ax.text(.99,.01,footnoteText)
     ax.set_xlim(-1, 1)
     ax.set_ylim(-1, 1)
     plt.axis('off')

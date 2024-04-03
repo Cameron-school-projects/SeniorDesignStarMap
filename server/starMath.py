@@ -8,6 +8,7 @@ from pytz import utc
 from astropy.coordinates import EarthLocation
 from astropy.time import Time
 from astropy import units as u
+from astropy.coordinates import get_body
 #constants :/
 RADS = math.pi / 180
 DEGS = 180 / math.pi
@@ -193,6 +194,7 @@ def getMoonPhase(time, julianDate, location):
     return
 
 def getMoonLocation(T):
+   
     #gets moon's location
     #T is explained in the doc
     #those are some ugly formulas :((

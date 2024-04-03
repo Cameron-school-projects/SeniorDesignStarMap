@@ -1,7 +1,16 @@
 import sqlite3
 connection =  sqlite3.connect("stars.db")
 cursor = connection.cursor()
+constellationReferences = {
+    'Aries':[9257,6888,6195,6147],
+    'Taurus':[18796,15108,14714,14183,14373,14710,18021,13110,11284],
+    }
 def createDatabase():
+    cursor.execute('''CREATE TABLE constellations(
+               name STRING PRIMARY KEY,
+                dec DOUBLE,
+                RA DOUBLE
+    );''')
     cursor.execute('''CREATE TABLE stars(
                id INTEGER PRIMARY KEY,
                hip INTEGER,
@@ -12,7 +21,9 @@ def createDatabase():
                bayerFlamesteed STRING,
                RA DOUBLE,
                dec DOUBLE,
-               magnitude DOUBLE
+               magnitude DOUBLE,
+               constellation STRING,
+               FOREIGN KEY (constellation) REFERENCES constellations(name) 
     );''')
     cursor.execute('''CREATE TABLE planets(
                id INTEGER PRIMARY KEY,
@@ -28,8 +39,11 @@ def createDatabase():
                wScale DOUBLE,
                wProp DOUBLE,
                oScale DOUBLE,
-               oProp DOUBLE
+               oProp DOUBLE,
+               constellation STRING,
+               FOREIGN KEY (constellation) REFERENCES constellations(name) 
     );''')
+
 
 def parseCSVStars():
     with open('hyg.csv',encoding='utf-8') as f:
@@ -40,6 +54,10 @@ def parseCSVStars():
             if(floatMagnitude<6.0):
                 newStar = [elements[0],elements[1],elements[2],elements[3],elements[4],elements[5],elements[6],elements[7],elements[8],elements[10]]
                 cursor.execute("INSERT INTO STARS VALUES(?,?,?,?,?,?,?,?,?,?)",newStar)
+                #Check if star is known to be in a constellation
+                connectedConst = constellationReferences.get(elements[0])
+                if(connectedConst!=None):
+                    cursor.execute("INSERT INTO CONSTELLATIONS(name) VALUES(?,?)",(connectedConst,elements[0]))
         connection.commit()
 
 

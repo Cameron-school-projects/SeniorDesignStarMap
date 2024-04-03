@@ -53,7 +53,8 @@ def makeMap(time, date, lat,lon):
             allStars['mag'].append((3 ** ( star[9]/ -2.5)))
         else:
             allStars['mag'].append(100*10**(star[9]/-2.5))
-        allStars['label'].append(star[5])
+        if(star[5]!=''):
+            allStars['label'].append(star[5])
 
     map = drawMap(allStars)
     #pass in time, date, and location

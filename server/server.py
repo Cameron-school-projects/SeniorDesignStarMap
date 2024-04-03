@@ -10,14 +10,15 @@ def hello_world(request):
 #run server if we run the webservice directly 
 if __name__ == '__main__':
     with Configurator() as config:
-        #test route
         config.add_route('hello', '/')
         config.add_view(hello_world, route_name='hello')
-        #route for getting star data and generating map
+        app = config.make_wsgi_app()
+     #route for getting star data and generating map
         config.add_route('getStarData', '/getStarData')
         config.add_view(getStarDataRoute, route_name='hello')
         app = config.make_wsgi_app()
-        server = make_server('127.0.0.1', 6543, app)
-        print("serving")
-        makeMap("1:30PM","05/08/2002","20-55-70.010N","20-55-70.010W")
-        server.serve_forever()
+    server = make_server('127.0.0.1', 6543, app)
+    print("serving")
+    makeMap("1:30PM","05/08/2002","20-55-70.010N","20-55-70.010W")
+    server.serve_forever()
+       

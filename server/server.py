@@ -18,6 +18,8 @@ if __name__ == '__main__':
         config.add_view(getStarDataRoute, route_name='hello')
         app = config.make_wsgi_app()
     server = make_server('127.0.0.1', 6543, app)
+    # createDatabase()
+    # parseCSVStars()
     print("serving")
     makeMap("1:30PM","05/08/2002","20-55-70.010N","20-55-70.010W")
     server.serve_forever()

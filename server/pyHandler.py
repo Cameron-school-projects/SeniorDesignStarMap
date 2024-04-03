@@ -42,7 +42,7 @@ def makeMap(time, date, lat,lon):
     GSTime = getGST(currentDate)
     GMTime = getUTC(latDec,lonDec,currentDate.hour,currentDate.minute,currentDate.second,currentDate.day,currentDate.month,currentDate.year)
     siderealTime = getLST(GSTime,lonDec)
-    allStarData = getAllStars()
+    allStarData = getAllVisibleStars(latDec)
     for star in allStarData:
         #pass in RA and Dec
         tempRA,tempDec = getStarAzEl(star[7],star[8],siderealTime,latDec,lonDec)
@@ -52,7 +52,7 @@ def makeMap(time, date, lat,lon):
         if(star[5]=='Sol'):
             allStars['mag'].append((3 ** ( star[9]/ -2.5)))
         else:
-            allStars['mag'].append(100*10**(star[9]/-2.5))
+            allStars['mag'].append((100*10**(star[9]/-2.5))+10)
         if(star[5]!=''):
             allStars['label'].append(star[5])
 

@@ -85,7 +85,20 @@ def close(connectionName, cursorName = False):
         #allStars[7] = RA
         #allStars[8] = dec
         #allStars[9] = magnitude
-def getAllStars():
-    #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
-    allStars = cursor.execute("SELECT * FROM stars")
-    return allStars.fetchall()
+def getAllVisibleStars(observerLat):
+    if(observerLat<0):
+        #any stars within 90 degrees of declination will be visible
+        visibleLat = [(-90+observerLat-5)]
+        print(type(visibleLat))
+        #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
+        allStars = cursor.execute("SELECT * FROM stars WHERE dec BETWEEN -90 AND ?",(visibleLat))
+        return allStars.fetchall()
+    else:
+        #any stars within 90 degrees of declination will be visible
+        visibleLat = [(90-observerLat+5)]
+        print(type(visibleLat))
+        #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
+        allStars = cursor.execute("SELECT * FROM stars WHERE dec BETWEEN ? AND 90",(visibleLat))
+        return allStars.fetchall()
+
+    

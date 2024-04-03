@@ -73,6 +73,9 @@ def close(connectionName, cursorName = False):
     if connectionName:
         connectionName.close()
         print("\nSQLite Connection closed")
+
+#Returns all stars visible to specific latitude and longitude 
+#Expects latitude/longitude to be in decimal        
 #When returning, python only returns values
 #the corresponding attributes are:
         #allStars[0] = id
@@ -85,20 +88,27 @@ def close(connectionName, cursorName = False):
         #allStars[7] = RA
         #allStars[8] = dec
         #allStars[9] = magnitude
-def getAllVisibleStars(observerLat):
+def getAllVisibleStars(observerLat,observerLong):
+    queryString=""
+    visibleLat=0   
+    visibleLong=0  
+    #build query based on lat/long of observer
     if(observerLat<0):
         #any stars within 90 degrees of declination will be visible
-        visibleLat = [(-90+observerLat-5)]
-        print(type(visibleLat))
-        #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
-        allStars = cursor.execute("SELECT * FROM stars WHERE dec BETWEEN -90 AND ?",(visibleLat))
-        return allStars.fetchall()
+        visibleLat = (90+observerLat-5)/360
+        queryString = "SELECT * FROM stars WHERE RA BETWEEN 24 AND  ?"
     else:
         #any stars within 90 degrees of declination will be visible
-        visibleLat = [(90-observerLat+5)]
-        print(type(visibleLat))
+        visibleLat = (90-observerLat+5)/360
         #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
-        allStars = cursor.execute("SELECT * FROM stars WHERE dec BETWEEN ? AND 90",(visibleLat))
-        return allStars.fetchall()
-
-    
+        queryString = "SELECT * FROM stars WHERE RA BETWEEN ? AND 24"
+    if(observerLong<0):
+        visibleLong=(90+observerLong)
+        queryString = queryString+" AND dec < ?"
+    else:
+        visibleLong=(90-observerLong)
+    #     queryString = queryString+" AND RA BETWEEN ? AND 24"
+    allParams = (visibleLat,visibleLong)
+    #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
+    allStars = cursor.execute(queryString,allParams)
+    return allStars.fetchall()

@@ -35,28 +35,50 @@ def checkDB():
     
 def makeMap(time, date, lat,lon):
     allStars = {'x':[],'y':[],'mag':[],'label':[]}
+    prev=0
+    constellations = {'Taurus':[]}
     dateAndTime = str(date+" "+time)
     currentDate = datetime.strptime(dateAndTime,'%m/%d/%Y %I:%M%p')
     latDec = convertLatAndLong(lat)
     lonDec = convertLatAndLong(lon)
-    GSTime = getGST(currentDate)
-    GMTime = getUTC(latDec,lonDec,currentDate.hour,currentDate.minute,currentDate.second,currentDate.day,currentDate.month,currentDate.year)
-    siderealTime = getLST(GSTime,lonDec)
+    GSTime = GST(currentDate,latDec,lonDec)
+    siderealTime = testLST(currentDate,GSTime,lonDec)
     allStarData = getAllVisibleStars(latDec,lonDec)
     for star in allStarData:
         #pass in RA and Dec
-        tempRA,tempDec = getStarAzEl(star[7],star[8],siderealTime,latDec,lonDec)
-        allStars['x'].append(tempRA)
-        allStars['y'].append(tempDec)
+        tempAz,tempEl = getStarAzEl(star[7],star[8],siderealTime,latDec,lonDec)
         #suns magnitude is so big we need to diminish it 
+        # allStars['x'].append(tempAz)
+        # allStars['y'].append(tempEl)
         if(star[5]=='Sol'):
             allStars['mag'].append((3 ** ( star[9]/ -2.5)))
         else:
             allStars['mag'].append((100*10**(star[9]/-2.5))+10)
         if(star[5]!=''):
             allStars['label'].append(star[5])
-
-    map = drawMap(allStars)
+        if(star[10]=='Taurus'):
+            print(star)
+            if(star[11]!=1):
+                allStars['x'].append(tempAz)
+                allStars['y'].append(tempEl)
+                constellations[star[10]].append([prev,(tempAz,tempEl)])
+                prev=(tempAz,tempEl)
+            else:
+                allStars['x'].append(tempAz)
+                allStars['y'].append(tempEl)
+                constellations[star[10]].append([(tempAz,tempEl)])
+                prev=(tempAz,tempEl)
+            
+            # allStars['label'].append(str(star[0]))
+        # if(star[10] in constellations):
+        #     constellations[star[10]][0].append((tempAz,tempEl))
+        # elif(star[10]!=None):
+        #     constellations[star[10]]=[[]]
+        #     constellations[star[10]][0].append((tempAz,tempEl))
+    # print(constellations)
+    # for key in constellations:
+    #     constellations[key][0] = sorted(constellations[key][0],key=lambda tup: tup[1])
+    map = drawMap(allStars,constellations)
     #pass in time, date, and location
     #run math commands
     #run map creation function

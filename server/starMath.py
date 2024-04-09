@@ -8,6 +8,7 @@ from pytz import utc
 from astropy.coordinates import EarthLocation
 from astropy.time import Time
 from astropy import units as u
+from datetime import timezone
 from astropy.coordinates import get_body
 #constants :/
 RADS = math.pi / 180
@@ -41,10 +42,15 @@ def getDate(JD):
 #assumes that date is a string representing current date in mm/dd/yy or mm/dd/yyyy format 
 #returns string
 def getJD(date):
-    dateToParse = datetime.strptime(date, '%m/%d/%Y')
-    dayOfYear = dateToParse.timetuple().tm_yday
-    year = dateToParse.year
-    return str(year)+"-"+str(dayOfYear)
+    months = float(date.month)
+    days = float(date.day)
+    years = float(date.year)
+    hours = float(date.hour)
+    mins = float(date.minute)
+    mins = mins/60
+    UT = hours+mins
+    JD = (367*years) - int((7*(years+int((months+9)/12)))/4) + int((275*months)/9) + days + 1721013.5 + (UT/24)
+    return JD
 #returns GST for current time,
 #expects localTime to be a datetime object
 def getGST(localTime):
@@ -62,12 +68,11 @@ def convertLatAndLong(location):
 
 #returns UTC
 #returns datetime object    
-def getUTC(lat, lon, h, m, s, day, month, year):
-    currentDate = datetime(year,month,day,h,m,s )
+def getUTC(lat, lon,date):
     timeZoneConverter = TimezoneFinder()  
     timezone_str = timeZoneConverter.timezone_at(lng=lon, lat=lat)
     oldTimeZone = pytz.timezone(timezone_str)
-    return oldTimeZone.localize(currentDate).astimezone( utc )
+    return oldTimeZone.localize(date).astimezone( utc )
 
 #return local sidereal time 
 #expects time to be in GST
@@ -76,7 +81,7 @@ def getLST(time,lon):
     hours = int(dividedLon)
     minutes = (dividedLon*60) % 60
     seconds = (dividedLon*3600) % 60
-    #check if long is west
+    #check if print(currentDate)long is west
     if(lon<0):
         LST = time - timedelta(hours=hours,minutes=minutes,seconds=seconds)
     else:
@@ -100,6 +105,8 @@ def getStarAzEl(ra, dec, time, lat, long):
     h = time-ra
     az = math.atan(-(math.sin(h) * math.cos(dec))/(math.cos(lat)*math.sin(dec) - math.sin(lat)*math.cos(dec)*math.cos(h)))
     el = math.asin(math.sin(lat)*math.sin(dec) + math.cos(lat)*math.cos(dec)*math.cos(h))
+    # az = az*180/math.pi
+    # el = el*180/math.pi
     return az, el
 
 def getOrbitalElements(planetData, JD):
@@ -200,3 +207,34 @@ def getMoonLocation(T):
     #those are some ugly formulas :((
     #return moon's geocentric longitude and latitude
     return
+
+def GST(date,lat,lon):
+    dateUTC = getUTC(lat,lon,date)
+    #calculate the Julian date:
+    JD = getJD(dateUTC)
+    #calculate the Greenwhich mean sidereal time:
+    GMST = 18.697374558 + 24.06570982441908*(JD - 2451545)
+    GMST = GMST % 24    #use modulo operator to convert to 24 hours
+    GMSTmm = (GMST - int(GMST))*60          #convert fraction hours to minutes
+    GMSTss = (GMSTmm - int(GMSTmm))*60      #convert fractional minutes to seconds
+    GMSThh = int(GMST)
+    GMSTmm = int(GMSTmm)
+    GMSTss = int(GMSTss)
+    # print ('\nLocal G Time %s:%s:%s \n\n' %(GMSThh, GMSTmm, GMSTss))
+    return GMST
+
+def testLST(date,GMST,Long):
+    #Convert to the local sidereal time by adding the longitude (in hours) from the GMST.
+    #(Hours = Degrees/15, Degrees = Hours*15)
+    Long = Long/15      #Convert longitude to hours
+    LST = GMST+Long     #Fraction LST. If negative we want to add 24...
+    if LST < 0:
+        LST = LST +24
+    LSTmm = (LST - int(LST))*60          #convert fraction hours to minutes
+    LSTss = (LSTmm - int(LSTmm))*60      #convert fractional minutes to seconds
+    LSThh = int(LST)
+    LSTmm = int(LSTmm)
+    LSTss = int(LSTss)    
+    # print ('\nLocal Sidereal Time %s:%s:%s \n\n' %(LSThh, LSTmm, LSTss))
+
+    return LST

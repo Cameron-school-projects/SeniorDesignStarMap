@@ -239,3 +239,11 @@ def testLST(date,GMST,Long):
     # print ('\nLocal Sidereal Time %s:%s:%s \n\n' %(LSThh, LSTmm, LSTss))
 
     return LST
+
+def checkStarVisibility(allStars,lat,LST):
+    visibleStars=[]
+    for star in allStars:
+        tempAlt = math.asin((math.sin(lat)*math.sin(star[8])+math.cos(lat)*math.cos(star[8])*math.cos(LST)))
+        if(tempAlt>0):
+            visibleStars.append(star)
+    return visibleStars

@@ -1,4 +1,5 @@
 import sqlite3
+from starMath import checkStarVisibility
 connection =  sqlite3.connect("stars.db")
 cursor = connection.cursor()
 constellationReferences = {
@@ -113,7 +114,7 @@ def close(connectionName, cursorName = False):
 def getAllVisibleStars(observerLat,observerLong,LST):
     queryString=""
     observerDec = observerLat
-    observerRA = LST
+    observerRA = LST    
     if(observerLat<0):
         queryString = "SELECT * FROM stars WHERE (dec + ? ) < -90"
     else:
@@ -149,6 +150,8 @@ def getAllVisibleStars(observerLat,observerLong,LST):
     print(allParams)
     #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
     allStars = cursor.execute(queryString,allParams)
-    return allStars.fetchall()
+    allStars = allStars.fetchall()
+    visibleStars = checkStarVisibility(allStars,observerLat,LST)
+    return visibleStars
 
 

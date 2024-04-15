@@ -41,13 +41,9 @@ def makeMap(time, date, lat,lon):
     currentDate = datetime.strptime(dateAndTime,'%m/%d/%Y %I:%M%p')
     latDec = convertLatAndLong(lat)
     lonDec = convertLatAndLong(lon)
-    print(latDec)
-    print(lonDec)
     GSTime = GST(currentDate,latDec,lonDec)
     siderealTime = testLST(currentDate,GSTime,lonDec)
-    print(siderealTime)
     allStarData = getAllVisibleStars(latDec,lonDec,siderealTime)
-    print(len(allStarData))
     tarAz,tarEl = getStarAzEl(4,25,siderealTime,latDec,lonDec)
     constellations['Aries'].append((tarAz,tarEl))
     for star in allStarData:

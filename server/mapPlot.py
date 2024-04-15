@@ -52,18 +52,17 @@ def drawMap(allStars,constellations):
     ax.set_ylim(-2, 2)
     plt.autoscale(enable=True,axis='both',tight=None)
     # plt.savefig(buf,format="png",dpi=300)
-    plt.savefig('unlabeled.png',dpi=300)
-    for i, txt in enumerate(allStars['label']):
-        ax.annotate(txt, (allStars['x'][i], allStars['y'][i]),color="white")
+    # plt.savefig('unlabeled.png',dpi=300)
+    # for i, txt in enumerate(allStars['label']):
+    #     ax.annotate(txt, (allStars['x'][i], allStars['y'][i]),color="white")
 
     # plt.axis('off')
     ax.margins(0, 0)
-    # buf = io.BytesIO()
+    buf = io.BytesIO()
     plt.axis('off')
-    # plt.savefig(buf,format="png",dpi=300)
+    plt.savefig(buf,format="png",dpi=300)
     # plt.savefig('labeled.png',dpi=300)
-    plt.show()
     #the horrors
     #create and save png
     #returns png
-    # return b64encode(buf.getvalue()).decode()
+    return b64encode(buf.getvalue()).decode()

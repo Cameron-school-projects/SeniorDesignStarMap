@@ -147,7 +147,6 @@ def getAllVisibleStars(observerLat,observerLong,LST):
     #         visibleLong2=tempLong
     #     queryString = queryString+" AND dec BETWEEN ? AND ? ORDER BY constellationNum"
     allParams = [(observerLat)]
-    print(allParams)
     #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
     allStars = cursor.execute(queryString,allParams)
     allStars = allStars.fetchall()

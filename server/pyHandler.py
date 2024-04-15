@@ -36,7 +36,7 @@ def checkDB():
 def makeMap(time, date, lat,lon):
     allStars = {'x':[],'y':[],'mag':[],'label':[]}
     prev=0
-    constellations = {'Taurus':[]}
+    constellations = {'Aries':[]}
     dateAndTime = str(date+" "+time)
     currentDate = datetime.strptime(dateAndTime,'%m/%d/%Y %I:%M%p')
     latDec = convertLatAndLong(lat)
@@ -44,30 +44,31 @@ def makeMap(time, date, lat,lon):
     GSTime = GST(currentDate,latDec,lonDec)
     siderealTime = testLST(currentDate,GSTime,lonDec)
     allStarData = getAllVisibleStars(latDec,lonDec)
+    tarAz,tarEl = getStarAzEl(4,25,siderealTime,latDec,lonDec)
+    constellations['Aries'].append((tarAz,tarEl))
     for star in allStarData:
         #pass in RA and Dec
         tempAz,tempEl = getStarAzEl(star[7],star[8],siderealTime,latDec,lonDec)
         #suns magnitude is so big we need to diminish it 
-        # allStars['x'].append(tempAz)
-        # allStars['y'].append(tempEl)
-        if(star[5]=='Sol'):
+        allStars['x'].append(tempAz)
+        allStars['y'].append(tempEl)
+        if(star[6]=='Sol'):
             allStars['mag'].append((3 ** ( star[9]/ -2.5)))
         else:
             allStars['mag'].append((100*10**(star[9]/-2.5))+10)
-        if(star[5]!=''):
-            allStars['label'].append(star[5])
-        if(star[10]=='Taurus'):
-            print(star)
-            if(star[11]!=1):
-                allStars['x'].append(tempAz)
-                allStars['y'].append(tempEl)
-                constellations[star[10]].append([prev,(tempAz,tempEl)])
-                prev=(tempAz,tempEl)
-            else:
-                allStars['x'].append(tempAz)
-                allStars['y'].append(tempEl)
-                constellations[star[10]].append([(tempAz,tempEl)])
-                prev=(tempAz,tempEl)
+        if(star[6]!=''):
+            allStars['label'].append(star[6])
+        # if(star[10]=='Aries'):
+        #     if(star[11]!=1):
+        #         allStars['x'].append(tempAz)
+        #         allStars['y'].append(tempEl)
+                # constellations[star[10]].append([prev,(tempAz,tempEl)])
+                # prev=(tempAz,tempEl)
+            # else:
+            #     allStars['x'].append(tempAz)
+            #     allStars['y'].append(tempEl)
+            #     constellations[star[10]].append([(tempAz,tempEl)])
+            #     prev=(tempAz,tempEl)
             
             # allStars['label'].append(str(star[0]))
         # if(star[10] in constellations):

@@ -105,8 +105,8 @@ def getStarAzEl(ra, dec, time, lat, long):
     h = time-ra
     az = math.atan(-(math.sin(h) * math.cos(dec))/(math.cos(lat)*math.sin(dec) - math.sin(lat)*math.cos(dec)*math.cos(h)))
     el = math.asin(math.sin(lat)*math.sin(dec) + math.cos(lat)*math.cos(dec)*math.cos(h))
-    # az = az*180/math.pi
-    # el = el*180/math.pi
+    # az = 2*math.cos(az)
+    # el = 2*math.sin(el)
     return az, el
 
 def getOrbitalElements(planetData, JD):

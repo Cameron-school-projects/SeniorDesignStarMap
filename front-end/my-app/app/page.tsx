@@ -1,7 +1,148 @@
 import Image from "next/image";
+import LeftColumn from "./leftColumn";
+//import mapFrame from "./starmapDisplay";
+//import BoxSx from "./boxSection";
+import { Box } from '@mui/material';
+import InfoDialog from "./info";
+import ImageBox from "./map";
+//import stars from '../images/starsky.jpg';
+
+/* 
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle'; 
+*/
+
+/*
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+*/
+
 
 export default function Home() {
+
+  const labels = ['Latitude', 'Longitude', 'Date', 'Clock Time'];
+
   return (
+
+    <main className="LandingScreen"> 
+
+    <div style= {{ 
+
+    marginLeft: '5%',
+    marginTop: '60px',
+    width: '30%'
+
+    }}>
+  <Box color='black'
+      height= '85vh'
+      width= '50%'
+      border= "2px solid #000000"
+      borderColor= "black"
+      borderRadius='8px'
+      bgcolor= 'white' p={5}>
+      
+
+    <div className= "LeftSideColumn">
+
+      <div style={{ 
+      display: 'flex',
+      alignItems: 'left',
+      justifyContent: 'flex-start',
+      height: '10vh',  
+      }}> 
+
+      <LeftColumn labels={labels} />
+
+      </div>
+    </div>
+      
+  </Box>
+
+      <div className= "Instructions" style={{
+
+        position: 'relative',
+        left: '-45px',
+        top: '-22px',
+        height: '16vh',
+        
+      }}>
+
+      <InfoDialog />
+     
+      </div>
+
+
+
+    </div>
+
+    <div className="imageMap" style= {{
+
+      position: 'relative',
+      left: '400px',
+      top: '-700px',
+      height: '16vh',
+
+    }}>
+
+      <ImageBox imageUrl="../images/starsky.jpg" altText="I mean it should be the starmap" />
+
+
+    </div>
+
+
+
+    </main>
+    
+   
+
+      
+
+
+/*
+
+//WORKS FOR INTRSUTINS BUTTON JUST PUT IN INTSRUCTIONS DIV
+
+<HelpOutlineOutlinedIcon style={{ 
+
+      position: 'relative',
+      left: '-45px',
+      top: '-25px',
+      height: '5vh',
+      fontSize: '46px'
+
+
+      }}>
+
+
+
+      </HelpOutlineOutlinedIcon> 
+      END OF INSTRCTUONS DIV
+
+
+    <main className = "MainStarScreen"> 
+      <section className = "section">  
+        <div className = "LeftColumnTextBoxArea"> 
+          <h1 className= "headerText">
+            Input Area
+          </h1>
+
+
+//<mapFrame imageUrl="string here" /> map thing
+
+      
+
+      </section>
+  // <div>   </div> */
+
+    
+    
+    /*</main>
+
+    /*
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
@@ -108,6 +249,6 @@ export default function Home() {
           </p>
         </a>
       </div>
-    </main>
+    </main> */
   );
 }

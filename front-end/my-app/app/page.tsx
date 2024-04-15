@@ -5,6 +5,7 @@ import LeftColumn from "./leftColumn";
 import { Box } from '@mui/material';
 import InfoDialog from "./info";
 import ImageBox from "./map";
+import {useState} from 'react';
 //import stars from '../images/starsky.jpg';
 
 /* 
@@ -25,7 +26,7 @@ import '@fontsource/roboto/700.css';
 export default function Home() {
 
   const labels = ['Latitude', 'Longitude', 'Date', 'Clock Time'];
-
+  const [image,setImage] = useState("")
   return (
 
     <main className="LandingScreen"> 

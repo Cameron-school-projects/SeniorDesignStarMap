@@ -21,6 +21,6 @@ if __name__ == '__main__':
     # createDatabase()
     # parseCSVStars()
     print("serving")
-    makeMap("1:30PM","05/08/2002","20-65-70.010N","20-75-70.010W")
+    makeMap("1:30PM","05/08/2002","33-52-11.44S","151-12-29.82W")
     server.serve_forever()
        

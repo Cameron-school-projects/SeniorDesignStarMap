@@ -230,6 +230,7 @@ def testLST(date,GMST,Long):
     LST = GMST+Long     #Fraction LST. If negative we want to add 24...
     if LST < 0:
         LST = LST +24
+    LST = LST %24
     LSTmm = (LST - int(LST))*60          #convert fraction hours to minutes
     LSTss = (LSTmm - int(LSTmm))*60      #convert fractional minutes to seconds
     LSThh = int(LST)

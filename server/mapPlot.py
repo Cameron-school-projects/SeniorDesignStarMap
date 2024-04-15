@@ -61,7 +61,7 @@ def drawMap(allStars,constellations):
     # buf = io.BytesIO()
     plt.axis('off')
     # plt.savefig(buf,format="png",dpi=300)
-    plt.savefig('labeled.png',dpi=300)
+    # plt.savefig('labeled.png',dpi=300)
     plt.show()
     #the horrors
     #create and save png

@@ -110,29 +110,43 @@ def close(connectionName, cursorName = False):
         #allStars[8] = dec
         #allStars[9] = magnitude
         #allStars[10] = constellation(if applicable)
-def getAllVisibleStars(observerLat,observerLong):
+def getAllVisibleStars(observerLat,observerLong,LST):
     queryString=""
-    visibleLat=0   
-    visibleLong=0  
-    # test = cursor.execute("Select * from stars WHERE constellationNum !=0 ORDER BY constellationNum")
-    # print(test.fetchall())
-    #build query based on lat/long of observer
+    observerDec = observerLat
+    observerRA = LST
     if(observerLat<0):
-        #any stars within 90 degrees of declination will be visible
-        visibleLat = (90+observerLat-5)/360
-        queryString = "SELECT * FROM stars WHERE RA BETWEEN 24 AND  ?"
+        queryString = "SELECT * FROM stars WHERE (dec + ? ) < -90"
     else:
-        #any stars within 90 degrees of declination will be visible
-        visibleLat = (90-observerLat+5)/360
-        #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
-        queryString = "SELECT * FROM stars WHERE RA BETWEEN ? AND 24"
-    if(observerLong<0):
-        visibleLong=(180+observerLong)
-        queryString = queryString+" AND dec < ? ORDER BY constellationNum"
-    else:
-        visibleLong=(180-observerLong)
-        queryString = queryString+" AND dec > ? ORDER BY constellationNum"
-    allParams = (visibleLat,visibleLong)
+        queryString = "SELECT * FROM stars WHERE (dec + ?) > 90"
+    # build query based on lat/long of observer
+    # if(observerLong<0):        
+    #     queryString = "SELECT * FROM stars WHERE RA BETWEEN ? AND 0"
+    # else:
+    #     #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
+    #     queryString = "SELECT * FROM stars WHERE RA BETWEEN ? AND 24"
+    # if(observerLat<0):        
+    #     visibleLong2=(90+observerLat)
+    #     visibleLong1 = (90-observerLat)
+    #     tempLong =visibleLong2%180 
+    #     if(-tempLong!=visibleLong2):
+    #         visibleLong2=tempLong
+    #     tempLong = visibleLong1%180
+    #     if(-tempLong!=visibleLong1):
+    #         visibleLong1=tempLong
+    #     queryString = queryString+" AND dec BETWEEN ? AND ? ORDER BY constellationNum"
+    # else:
+        
+    #     visibleLong1=(90-observerLat)
+    #     visibleLong2 = (90+observerLat)
+    #     tempLong =visibleLong1%180 
+    #     if(tempLong!=visibleLong1 or -tempLong!=visibleLong1):
+    #         visibleLong1=-tempLong
+    #     tempLong = visibleLong2%180
+    #     if(tempLong!=visibleLong2):
+    #         visibleLong2=tempLong
+    #     queryString = queryString+" AND dec BETWEEN ? AND ? ORDER BY constellationNum"
+    allParams = [(observerLat)]
+    print(allParams)
     #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
     allStars = cursor.execute(queryString,allParams)
     return allStars.fetchall()

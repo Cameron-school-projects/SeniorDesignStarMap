@@ -1,3 +1,5 @@
+'use client'
+
 import Image from "next/image";
 import LeftColumn from "./leftColumn";
 //import mapFrame from "./starmapDisplay";
@@ -6,27 +8,32 @@ import { Box } from '@mui/material';
 import InfoDialog from "./info";
 import ImageBox from "./map";
 import {useState} from 'react';
+import axios, {isCancel, AxiosError} from 'axios';
+
+
 //import stars from '../images/starsky.jpg';
-
-/* 
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle'; 
-*/
-
-/*
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-*/
 
 
 export default function Home() {
 
   const labels = ['Latitude', 'Longitude', 'Date', 'Clock Time'];
   const [image,setImage] = useState("")
+
+  axios.post('127.0.0.1:6543/getStarData', {
+
+    lat: '33-52-11.445',
+    lon: '151-12-29.82E',
+    date: '05/08/2002',
+    time: '1:30PM' 
+
+  })
+
+  .then((response)=>{
+
+    console.log(response);
+
+  })
+
   return (
 
     <main className="LandingScreen"> 
@@ -105,24 +112,6 @@ export default function Home() {
 
 /*
 
-//WORKS FOR INTRSUTINS BUTTON JUST PUT IN INTSRUCTIONS DIV
-
-<HelpOutlineOutlinedIcon style={{ 
-
-      position: 'relative',
-      left: '-45px',
-      top: '-25px',
-      height: '5vh',
-      fontSize: '46px'
-
-
-      }}>
-
-
-
-      </HelpOutlineOutlinedIcon> 
-      END OF INSTRCTUONS DIV
-
 
     <main className = "MainStarScreen"> 
       <section className = "section">  
@@ -134,12 +123,6 @@ export default function Home() {
 
 //<mapFrame imageUrl="string here" /> map thing
 
-      
-
-      </section>
-  // <div>   </div> */
-
-    
     
     /*</main>
 

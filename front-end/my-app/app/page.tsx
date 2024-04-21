@@ -32,6 +32,8 @@ export default function Home() {
   .then((response: any)=>{
 
     console.log(response);
+    let imageToDisplay = "data:image/png;base64,"+response.data
+    setImage(imageToDisplay)
 
   })
 }
@@ -97,7 +99,7 @@ export default function Home() {
 
     }}>
 
-      <ImageBox imageUrl="../images/starsky.jpg" altText="I mean it should be the starmap" />
+      <ImageBox imageUrl={image} altText="I mean it should be the starmap" />
 
 
     </div>

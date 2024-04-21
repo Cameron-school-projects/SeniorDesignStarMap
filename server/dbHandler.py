@@ -1,7 +1,5 @@
 import sqlite3
 from starMath import checkStarVisibility
-connection =  sqlite3.connect("stars.db")
-cursor = connection.cursor()
 constellationReferences = {
     'Aries':[9257,6147,6195,6888],
     'Taurus':[18796,15108,14714,14183,14373,14710,18021,13110,11284],
@@ -19,6 +17,8 @@ constellationReferences = {
 consetllationLocations=[(2,19),(4,25),(7,18),(8,14),(11,17),(13,-3),(15,-13),(17,-32),(19,-32),(21,-21),(23,-13),(1,12)]
 # ,(4,25),(7,18),(8,14),(11,17),(13,-3),(15,-13),(17,-32),(19,-32),(21,-21),(23,-13),(1,12)
 def createDatabase():
+    connection =  sqlite3.connect("stars.db")
+    cursor = connection.cursor()
     cursor.execute('''CREATE TABLE constellations(
                name STRING PRIMARY KEY,
                 dec DOUBLE,
@@ -60,6 +60,8 @@ def createDatabase():
 
 
 def parseCSVStars():
+    connection =  sqlite3.connect("stars.db")
+    cursor = connection.cursor()
     for idx,key in enumerate(constellationReferences):
         params = [(key),(consetllationLocations[idx][0]),(consetllationLocations[idx][1])]
         cursor.execute("INSERT INTO CONSTELLATIONS(name,dec,RA) VALUES(?,?,?)",params)
@@ -112,6 +114,8 @@ def close(connectionName, cursorName = False):
         #allStars[9] = magnitude
         #allStars[10] = constellation(if applicable)
 def getAllVisibleStars(observerLat,observerLong,LST):
+    connection =  sqlite3.connect("stars.db")
+    cursor = connection.cursor()
     queryString=""
     observerDec = observerLat
     observerRA = LST    

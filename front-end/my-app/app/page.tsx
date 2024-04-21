@@ -18,22 +18,23 @@ export default function Home() {
 
   const labels = ['Latitude', 'Longitude', 'Date', 'Clock Time'];
   const [image,setImage] = useState("")
+  function testPost(){
+    console.log("test")
+    axios.post('http://localhost:5000/getStarData', {
 
-  axios.post('127.0.0.1:6543/getStarData', {
-
-    lat: '33-52-11.445',
+    lat: '33-52-11.44S',
     lon: '151-12-29.82E',
     date: '05/08/2002',
-    time: '1:30PM' 
-
+    time: '1:30PM',
+    
   })
 
-  .then((response)=>{
+  .then((response: any)=>{
 
     console.log(response);
 
   })
-
+}
   return (
 
     <main className="LandingScreen"> 
@@ -78,7 +79,7 @@ export default function Home() {
         height: '16vh',
         
       }}>
-
+        <button onClick={testPost}>Click me</button>
       <InfoDialog />
      
       </div>

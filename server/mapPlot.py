@@ -30,8 +30,8 @@ def drawMap(allStars,constellations):
     border = patches.Circle((0,0),2, color='navy', fill=True)
     ax.add_patch(border)
     ax.scatter(allStars['x'], allStars['y'],
-     s=5
-,color='white', marker='.', linewidths=2, 
+     s=allStars['mag']
+,color=allStars['color'], marker='.', linewidths=2, 
     zorder=2)
     horizon = patches.Circle((0, 0), 2, transform=ax.transData)
     for col in ax.collections:
@@ -60,7 +60,7 @@ def drawMap(allStars,constellations):
     ax.margins(0, 0)
     buf = io.BytesIO()
     plt.axis('off')
-    plt.savefig(buf,format="png",dpi=300)
+    plt.savefig("unlabeled.png",format="png",dpi=300)
     # plt.savefig('labeled.png',dpi=300)
     #the horrors
     #create and save png

@@ -34,8 +34,8 @@ def checkDB():
         return
     
 def makeMap(time, date, lat,lon):
-    allStars = {'x':[],'y':[],'mag':[],'label':[]}
-    prev=0
+    allStars = {'x':[],'y':[],'mag':[],'label':[],'color':[]}
+    planetLocations={'x':[],'y':[]}
     constellations = {'Aries':[]}
     dateAndTime = str(date+" "+time)
     currentDate = datetime.strptime(dateAndTime,'%m/%d/%Y %I:%M%p')
@@ -44,18 +44,32 @@ def makeMap(time, date, lat,lon):
     GSTime = GST(currentDate,latDec,lonDec)
     siderealTime = testLST(currentDate,GSTime,lonDec)
     allStarData = getAllVisibleStars(latDec,lonDec,siderealTime)
-    tarAz,tarEl = getStarAzEl(4,25,siderealTime,latDec,lonDec)
-    constellations['Aries'].append((tarAz,tarEl))
+    allPlanets = getAllPlanetData()
+    jd = getJD(currentDate)
+    for planet in allPlanets:
+        if(planet !='Earth' and planet!='Sun'):
+            tempra,tempdec = getPlanetRADec(allPlanets[planet],allPlanets['Earth'],jd)
+            tempaz,tempel = getStarAzEl(tempra,tempdec,siderealTime,latDec,lonDec)
+            allStars['x'].append(tempaz)
+            allStars['y'].append(tempel)
+            # print(tempel)
+            # print(tempaz)
+            allStars['color'].append(allPlanets[planet][12])
+            allStars['mag'].append(10)
+            allStars['label'].append(planet)
     for star in allStarData:
         #pass in RA and Dec
         tempAz,tempEl = getStarAzEl(star[7],star[8],siderealTime,latDec,lonDec)
         #suns magnitude is so big we need to diminish it 
         allStars['x'].append(tempAz)
         allStars['y'].append(tempEl)
+        # print(tempEl)
+        allStars['color'].append('white')
         if(star[6]=='Sol'):
             allStars['mag'].append((3 ** ( star[9]/ -2.5)))
         else:
             allStars['mag'].append((100*10**(star[9]/-2.5))+10)
+            print((100*10**(star[9]/-2.5))+10)
         if(star[6]!=''):
             allStars['label'].append(star[6])
         # if(star[10]=='Aries'):

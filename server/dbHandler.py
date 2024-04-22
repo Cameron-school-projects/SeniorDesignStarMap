@@ -91,7 +91,8 @@ def addStar():
     return
 
 def addPlanets():
-
+    connection =  sqlite3.connect("stars.db")
+    cursor = connection.cursor()
     planetVals = {"Mercury": [252.25084,538101628.3,0.38709893,0.00000066,0.20563069,0.00002527,7.00487,23.51,77.45645,573.57,48.33167,446.3,'pink'],
                   "Venus":[181.97973,210664136.1,0.72333199,0.00000092,0.00677323,0.00004938,3.39471,2.86,131.53298,108.8,76.68069,996.89,'white'],
                   "Earth":[100.46435,129597740.6,1.00000011,0.00000005,0.01671022,0.00003804,0.00005,46.94,102.94719,1198.28,-11.26064,18228.25,'blue'],
@@ -113,6 +114,8 @@ def addPlanets():
 
 
 def getAllPlanetData():
+    connection =  sqlite3.connect("stars.db")
+    cursor = connection.cursor()
     planetDict = {}
     planets = cursor.execute("SELECT * FROM planets")
     planets = planets.fetchall()

@@ -13,17 +13,6 @@ def getStarInfo():
     return
 
 def drawMap(allStars,constellations):
-    # r=10
-    # fig = plt.figure(figsize=(50,50))
-    # ax = fig.add_subplot(projection="polar")
-    # area = 100 * r**2
-    # c = ax.scatter(allStars['x'],allStars['y'],r,linewidths=.4)
-    # ax.set_thetamin(-90)
-    # ax.set_thetamax(90)
-    # plt.axis('off')
-    # ax.set_theta_zero_location("N")
-    # plt.savefig('test.png')
-    # plt.show()
     constellationLines = []
     chart_size = 2
     fig, ax = plt.subplots(figsize=(30,30))
@@ -40,31 +29,32 @@ def drawMap(allStars,constellations):
     # box = OffsetImage(constellation,zoom=.15)
     # ab = AnnotationBbox(box,constellations['Taurus'][0],frameon=False)
     # ax.add_artist(ab)
-    # for key,value in constellations.items():
-    #     ax.add_collection(LineCollection(value,colors="#ffff",linewidths=.5))
+    for key,value in constellations.items():
+        ax.add_collection(LineCollection(value,colors="#ffff",linewidths=.5))
 
     #add labels
     # footnoteText = ""
     ax.margins(0, 0)
-    unlabeledBuf = io.BytesIO()
+    # unlabeledBuf = io.BytesIO()
     plt.axis('off')
     ax.set_xlim(-2, 2)
     ax.set_ylim(-2, 2)
-    plt.autoscale(enable=True,axis='both',tight=None)
-    plt.savefig(unlabeledBuf,format="png",dpi=300)
+    # plt.autoscale(enable=True,axis='both',tight=None)
+    # plt.savefig(unlabeledBuf,format="png",dpi=300)
     # plt.savefig('unlabeled.png',dpi=300)
     for i, txt in enumerate(allStars['label']):
         ax.annotate(txt, (allStars['x'][i], allStars['y'][i]),color="white")
 
     # plt.axis('off')
-    ax.margins(0, 0)
+    # ax.margins(0, 0)
     buf = io.BytesIO()
     plt.axis('off')
-    plt.savefig("unlabeled.png",format="png",dpi=300)
+    plt.show()
+    # plt.savefig("unlabeled.png",format="png",dpi=300)
     # plt.savefig('labeled.png',dpi=300)
     #the horrors
     #create and save png
     #returns png
-    buf = b64encode(buf.getvalue()).decode()
-    unlabeledBuf = b64encode(unlabeledBuf.getvalue()).decode()
-    return [buf,unlabeledBuf]
+    # buf = b64encode(buf.getvalue()).decode()
+    # unlabeledBuf = b64encode(unlabeledBuf.getvalue()).decode()
+    # return [buf,unlabeledBuf]

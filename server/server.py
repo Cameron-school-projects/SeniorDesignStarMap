@@ -20,7 +20,8 @@ if __name__ == '__main__':
     server = make_server('127.0.0.1', 6543, app)
     # createDatabase()
     # parseCSVStars()
+    # addPlanets()
     print("serving")
-    # makeMap("1:30PM","05/08/2002","33-52-11.44S","151-12-29.82E")
+    makeMap("1:30PM","05/08/2002","33-52-11.44S","151-12-29.82E")
     server.serve_forever()
        

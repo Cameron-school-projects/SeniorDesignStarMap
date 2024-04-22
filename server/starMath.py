@@ -126,7 +126,7 @@ def trueAnomaly(m, e):
     #m and e in radians
     E = m + e*math.sin(m) * (1.0 + e*math.cos(m))
     E1 = E
-    while(math.abs(E-E1) > (1.0 ** -12)):
+    while(abs(E-E1) > (1.0 ** -12)):
         E1 = E
         E = E1 - (E1 - e * math.sin(E1) - m) / (1 - e * math.cos(E1))
     V = 2 * math.atan(math.sqrt((1+e)/(1-e)) * math.tan(0.5 * E))
@@ -170,7 +170,7 @@ def getPlanetRADec(planetData, earthData, JD):
     
     return ra, dec
 
-def getPlanetAzEl(lat, lon, ra, dec):
+def getPlanetAzEl(lat, lon, ra, dec,LST):
     #not sure if this is different from star RA and Dec but we'll see I guess
     #takes in latitude, longitude, and ra and dec in degrees
     #returns planet azimuth and elevation
@@ -178,7 +178,7 @@ def getPlanetAzEl(lat, lon, ra, dec):
         lat *= -1
     if lon < 0:
         lon *= -1
-    A = getMST(time) - ra   #this is a vague time object. We'll figure it out later
+    A = LST - ra   #this is a vague time object. We'll figure it out later
     if A<0:
         A += 360
     decRad = dec * RADS
@@ -196,11 +196,11 @@ def getPlanetAzEl(lat, lon, ra, dec):
     except:
         az = 0
     
-    el *= DEGS
-    az *= DEGS
-
+    # el *= DEGS
+    # az *= DEGS
+    
     if(math.sin(hRad>0)):
-        az = 360-az
+        az = 360-az 
 
     return az, el
 

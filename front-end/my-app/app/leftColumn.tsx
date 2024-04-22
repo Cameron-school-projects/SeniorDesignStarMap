@@ -8,11 +8,12 @@ import axios, {isCancel, AxiosError} from 'axios';
 interface LeftColumnProps {
   labels: string[];
   labelImageSet:Function;
-  unlabeledSet:Function 
+  unlabeledSet:Function;
+  imageToDownload:string;
 }
 
 
-const LeftColumn: React.FC<LeftColumnProps> = ({ labels,labelImageSet,unlabeledSet }) => {
+const LeftColumn: React.FC<LeftColumnProps> = ({ labels,labelImageSet,unlabeledSet,imageToDownload }) => {
   function testPost(){
     console.log("test")
     axios.post('http://localhost:5000/getStarData', {
@@ -34,6 +35,12 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labels,labelImageSet,unlabeledS
 
   })
 }
+function downloadImage(){
+  var a = document.createElement("a"); //Create <a>
+  a.href = imageToDownload; //Image Base64 Goes here
+  a.download = "StarMap.png"; //File name Here
+  a.click(); //Downloaded file
+}
   return (
     <div style={{ width: '25%', float: 'left', padding: '10px', textAlign: 'center', fontFamily: 'monospace', fontSize: '25px' }}> {/* Adjust the styling as needed */}
       {labels.map((label, index) => (
@@ -47,6 +54,9 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labels,labelImageSet,unlabeledS
         <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={testPost}>
         Map it!
      </Button>
+     <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={downloadImage}>
+      Download Current Map
+      </Button>
     </div>
   );
 };

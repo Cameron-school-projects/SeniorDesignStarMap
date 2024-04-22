@@ -56,8 +56,7 @@ export default function Home() {
       justifyContent: 'flex-start',
       height: '10vh',  
       }}> 
-
-      <LeftColumn labels={labels} labelImageSet={setLabeledImage} unlabeledSet={setImage} />
+      <LeftColumn labels={labels} labelImageSet={setLabeledImage} unlabeledSet={setImage} imageToDownload={showLabels ? image:labeledImage} />
 
       </div>
     </div>
@@ -88,7 +87,7 @@ export default function Home() {
       height: '16vh',
 
     }}>
-      
+
       {selectImage()}
 
 

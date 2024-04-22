@@ -8,7 +8,6 @@ import { Box } from '@mui/material';
 import InfoDialog from "./info";
 import ImageBox from "./map";
 import {useState} from 'react';
-import axios, {isCancel, AxiosError} from 'axios';
 
 
 //import stars from '../images/starsky.jpg';
@@ -18,25 +17,17 @@ export default function Home() {
 
   const labels = ['Latitude', 'Longitude', 'Date', 'Clock Time'];
   const [image,setImage] = useState("")
-  function testPost(){
-    console.log("test")
-    axios.post('http://localhost:5000/getStarData', {
+  const [labeledImage,setLabeledImage] = useState("")
+  const [showLabels,setShowLabels] = useState(false)
+  function selectImage(){
+    if(showLabels){
+      return (<ImageBox imageUrl={labeledImage} altText="I mean it should be the starmap" />)
+    }
+    else{
+       return (<ImageBox imageUrl={image} altText="I mean it should be the starmap" />)
 
-    lat: '33-52-11.44S',
-    lon: '151-12-29.82E',
-    date: '05/08/2002',
-    time: '1:30PM',
-    
-  })
-
-  .then((response: any)=>{
-
-    console.log(response);
-    let imageToDisplay = "data:image/png;base64,"+response.data
-    setImage(imageToDisplay)
-
-  })
-}
+    }
+  }
   return (
 
     <main className="LandingScreen"> 
@@ -66,7 +57,7 @@ export default function Home() {
       height: '10vh',  
       }}> 
 
-      <LeftColumn labels={labels} />
+      <LeftColumn labels={labels} labelImageSet={setLabeledImage} unlabeledSet={setImage} />
 
       </div>
     </div>
@@ -81,7 +72,6 @@ export default function Home() {
         height: '16vh',
         
       }}>
-        <button onClick={testPost}>Click me</button>
       <InfoDialog />
      
       </div>
@@ -98,8 +88,8 @@ export default function Home() {
       height: '16vh',
 
     }}>
-
-      <ImageBox imageUrl={image} altText="I mean it should be the starmap" />
+      
+      {selectImage()}
 
 
     </div>

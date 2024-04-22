@@ -2,14 +2,38 @@
 import { shape } from 'prop-types';
 import React from 'react';
 import Button from './button';
+import axios, {isCancel, AxiosError} from 'axios';
 
 // Define the props in case you need to customize labels or add more props in the future
 interface LeftColumnProps {
   labels: string[];
+  labelImageSet:Function;
+  unlabeledSet:Function 
 }
 
 
-const LeftColumn: React.FC<LeftColumnProps> = ({ labels }) => {
+const LeftColumn: React.FC<LeftColumnProps> = ({ labels,labelImageSet,unlabeledSet }) => {
+  function testPost(){
+    console.log("test")
+    axios.post('http://localhost:5000/getStarData', {
+
+    lat: '33-52-11.44S',
+    lon: '151-12-29.82E',
+    date: '05/08/2002',
+    time: '1:30PM',
+    
+  })
+
+  .then((response: any)=>{
+
+    console.log(response);
+    let imageToDisplay = "data:image/png;base64,"+response.data[0]
+    unlabeledSet(imageToDisplay)
+    imageToDisplay = "data:image/png;base64,"+response.data[1]
+    labelImageSet(imageToDisplay)
+
+  })
+}
   return (
     <div style={{ width: '25%', float: 'left', padding: '10px', textAlign: 'center', fontFamily: 'monospace', fontSize: '25px' }}> {/* Adjust the styling as needed */}
       {labels.map((label, index) => (
@@ -20,7 +44,7 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labels }) => {
           
         </div>
       ))}
-        <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }}>
+        <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={testPost}>
         Map it!
      </Button>
     </div>

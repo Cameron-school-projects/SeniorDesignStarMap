@@ -46,15 +46,15 @@ def drawMap(allStars,constellations):
     #add labels
     # footnoteText = ""
     ax.margins(0, 0)
-    # buf = io.BytesIO()
+    unlabeledBuf = io.BytesIO()
     plt.axis('off')
     ax.set_xlim(-2, 2)
     ax.set_ylim(-2, 2)
     plt.autoscale(enable=True,axis='both',tight=None)
-    # plt.savefig(buf,format="png",dpi=300)
+    plt.savefig(unlabeledBuf,format="png",dpi=300)
     # plt.savefig('unlabeled.png',dpi=300)
-    # for i, txt in enumerate(allStars['label']):
-    #     ax.annotate(txt, (allStars['x'][i], allStars['y'][i]),color="white")
+    for i, txt in enumerate(allStars['label']):
+        ax.annotate(txt, (allStars['x'][i], allStars['y'][i]),color="white")
 
     # plt.axis('off')
     ax.margins(0, 0)
@@ -65,4 +65,6 @@ def drawMap(allStars,constellations):
     #the horrors
     #create and save png
     #returns png
-    return b64encode(buf.getvalue()).decode()
+    buf = b64encode(buf.getvalue()).decode()
+    unlabeledBuf = b64encode(unlabeledBuf.getvalue()).decode()
+    return [buf,unlabeledBuf]

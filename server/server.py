@@ -19,6 +19,8 @@ def server():
     time = request.json['time']
     bufToReturn = makeMap(time,date,lat,lon)
     return bufToReturn
-makeMap("1:30PM","05/08/2002","33-52-11.44S","151-12-29.82E")
+# createDatabase()
+# parseCSVStars()
+# makeMap("1:30PM","05/08/2002","33-52-11.44S","151-12-29.82E")
 
        

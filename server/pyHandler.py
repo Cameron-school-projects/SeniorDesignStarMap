@@ -64,25 +64,26 @@ def makeMap(time, date, lat,lon):
         allStars['x'].append(tempAz)
         allStars['y'].append(tempEl)
         # print(tempEl)
-        allStars['color'].append('white')
-        if(star[6]=='Sol'):
-            allStars['mag'].append((3 ** ( star[9]/ -2.5)))
-        else:
-            allStars['mag'].append((100*10**(star[9]/-2.5))+10)
-            print((100*10**(star[9]/-2.5))+10)
-        if(star[6]!=''):
-            allStars['label'].append(star[6])
-        # if(star[10]=='Aries'):
-        #     if(star[11]!=1):
-        #         allStars['x'].append(tempAz)
-        #         allStars['y'].append(tempEl)
-                # constellations[star[10]].append([prev,(tempAz,tempEl)])
-                # prev=(tempAz,tempEl)
-            # else:
+        # allStars['color'].append('white')
+        # if(star[6]=='Sol'):
+        #     allStars['mag'].append((3 ** ( star[9]/ -2.5)))
+        # else:
+        #     allStars['mag'].append((100*10**(star[9]/-2.5))+10)
+        #     print((100*10**(star[9]/-2.5))+10)
+        # if(star[6]!=''):
+        #     allStars['label'].append(star[6])
+        # if(star[10]!=None):
+                # print(star[10])
+            # if(star[11]!=1):
             #     allStars['x'].append(tempAz)
             #     allStars['y'].append(tempEl)
-            #     constellations[star[10]].append([(tempAz,tempEl)])
+            #     constellations[star[10]].append([prev,(tempAz,tempEl)])
             #     prev=(tempAz,tempEl)
+            # else:
+                # allStars['x'].append(tempAz)
+                # allStars['y'].append(tempEl)
+                # constellations[star[10]].append([(tempAz,tempEl)])
+                # prev=(tempAz,tempEl)
             
             # allStars['label'].append(str(star[0]))
         # if(star[10] in constellations):
@@ -93,6 +94,7 @@ def makeMap(time, date, lat,lon):
     # print(constellations)
     # for key in constellations:
     #     constellations[key][0] = sorted(constellations[key][0],key=lambda tup: tup[1])
+    print(allStars)
     map = drawMap(allStars,constellations)
     #pass in time, date, and location
     #run math commands

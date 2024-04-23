@@ -19,7 +19,7 @@ def drawMap(allStars,constellations):
     border = patches.Circle((0,0),2, color='navy', fill=True)
     ax.add_patch(border)
     ax.scatter(allStars['x'], allStars['y'],
-     s=allStars['mag']
+     s=15
 ,color=allStars['color'], marker='.', linewidths=2, 
     zorder=2)
     horizon = patches.Circle((0, 0), 2, transform=ax.transData)
@@ -29,21 +29,21 @@ def drawMap(allStars,constellations):
     # box = OffsetImage(constellation,zoom=.15)
     # ab = AnnotationBbox(box,constellations['Taurus'][0],frameon=False)
     # ax.add_artist(ab)
-    for key,value in constellations.items():
-        ax.add_collection(LineCollection(value,colors="#ffff",linewidths=.5))
+    # for key,value in constellations.items():
+    #     ax.add_collection(LineCollection(value,colors="#ffff",linewidths=.5))
 
     #add labels
     # footnoteText = ""
     ax.margins(0, 0)
-    # unlabeledBuf = io.BytesIO()
+    unlabeledBuf = io.BytesIO()
     plt.axis('off')
     ax.set_xlim(-2, 2)
     ax.set_ylim(-2, 2)
     # plt.autoscale(enable=True,axis='both',tight=None)
-    # plt.savefig(unlabeledBuf,format="png",dpi=300)
+    plt.savefig(unlabeledBuf,format="png",dpi=300)
     # plt.savefig('unlabeled.png',dpi=300)
-    for i, txt in enumerate(allStars['label']):
-        ax.annotate(txt, (allStars['x'][i], allStars['y'][i]),color="white")
+    # for i, txt in enumerate(allStars['label']):
+    #     ax.annotate(txt, (allStars['x'][i], allStars['y'][i]),color="white")
 
     # plt.axis('off')
     # ax.margins(0, 0)
@@ -55,6 +55,6 @@ def drawMap(allStars,constellations):
     #the horrors
     #create and save png
     #returns png
-    # buf = b64encode(buf.getvalue()).decode()
-    # unlabeledBuf = b64encode(unlabeledBuf.getvalue()).decode()
-    # return [buf,unlabeledBuf]
+    buf = b64encode(buf.getvalue()).decode()
+    unlabeledBuf = b64encode(unlabeledBuf.getvalue()).decode()
+    return [buf,unlabeledBuf]

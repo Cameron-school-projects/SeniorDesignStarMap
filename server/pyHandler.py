@@ -44,9 +44,7 @@ def getMoonAzEL(obsLat,obsLong,JD,siderealTime):
 
     
 def makeMap(time, date, lat,lon):
-    prev=0
     allStars = {'x':[],'y':[],'mag':[],'label':[],'color':[]}
-    planetLocations={'x':[],'y':[]}
     constellations = {'Taurus':[]}
     dateAndTime = str(date+" "+time)
     currentDate = datetime.strptime(dateAndTime,'%m/%d/%Y %I:%M%p')
@@ -106,10 +104,5 @@ def makeMap(time, date, lat,lon):
         #     constellations[star[10]]=[[]]
         #     constellations[star[10]][0].append((tempAz,tempEl))
     map = drawMap(allStars,constellations,moonPhase,moonAz,moonEl)
-    #pass in time, date, and location
-    #run math commands
-    #run map creation function
-    #save map
-    #return map
     return map
 

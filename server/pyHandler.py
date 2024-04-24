@@ -78,32 +78,30 @@ def makeMap(time, date, lat,lon):
         #pass in RA and Dec
         tempAz,tempEl = getStarAzEl(star[7],star[8],siderealTime,latDec,lonDec)
         #suns magnitude is so big we need to diminish it 
-        # allStars['x'].append(tempAz)
-        # allStars['y'].append(tempEl)
-        # print(tempEl)
-        # allStars['color'].append('white')
-        # if(star[6]=='Sol'):
-        #     allStars['mag'].append((3 ** ( star[9]/ -2.5)))
-        # else:
-        #     allStars['mag'].append((100*10**(star[9]/-2.5))+10)
-        #     print((100*10**(star[9]/-2.5))+10)
-        # if(star[6]!=''):
-        #     allStars['label'].append(star[6])
-        if(star[0]==9257):
-            print("here")
-        if(star[10]=='Taurus'):
-            if(star[11]!=1):
-                allStars['x'].append(tempAz)
-                allStars['y'].append(tempEl)
-                allStars['color'].append('white')
+        allStars['x'].append(tempAz)
+        allStars['y'].append(tempEl)
+        print(tempEl)
+        allStars['color'].append('white')
+        if(star[6]=='Sol'):
+            allStars['mag'].append((3 ** ( star[9]/ -2.5)))
+        else:
+            allStars['mag'].append((100*10**(star[9]/-2.5))+10)
+            print((100*10**(star[9]/-2.5))+10)
+        if(star[6]!=''):
+            allStars['label'].append(star[6])
+        # if(star[10]=='Taurus'):
+        #     if(star[11]!=1):
+        #         allStars['x'].append(tempAz)
+        #         allStars['y'].append(tempEl)
+        #         allStars['color'].append('white')
 
-                constellations[star[10]].append([prev,(tempAz,tempEl)])
-            else:
-                allStars['x'].append(tempAz)
-                allStars['y'].append(tempEl)
-                constellations[star[10]].append([(tempAz,tempEl)])
-                prev=(tempAz,tempEl)
-                allStars['color'].append('white')
+        #         constellations[star[10]].append([prev,(tempAz,tempEl)])
+        #     else:
+        #         allStars['x'].append(tempAz)
+        #         allStars['y'].append(tempEl)
+        #         constellations[star[10]].append([(tempAz,tempEl)])
+        #         prev=(tempAz,tempEl)
+        #         allStars['color'].append('white')
             
             # allStars['label'].append(str(star[0]))
         # if(star[10] in constellations):
@@ -111,8 +109,6 @@ def makeMap(time, date, lat,lon):
         # elif(star[10]!=None):
         #     constellations[star[10]]=[[]]
         #     constellations[star[10]][0].append((tempAz,tempEl))
-    print(constellations)
-    print(allStars)
     map = drawMap(allStars,constellations,moonPhase,moonAz,moonEl)
     #pass in time, date, and location
     #run math commands

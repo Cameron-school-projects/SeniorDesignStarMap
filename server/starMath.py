@@ -197,8 +197,8 @@ def getPlanetAzEl(lat, lon, ra, dec,LST):
     except:
         az = 0
     
-    # el *= DEGS
-    # az *= DEGS
+    el *= DEGS
+    az *= DEGS
     
     if(math.sin(hRad>0)):
         az = 360-az 

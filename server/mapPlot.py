@@ -32,17 +32,17 @@ def drawMap(allStars,constellations,moonPhase,moonAz,moonEl):
     elif moonPhase <= 0.19:   #waxing crescent
         imageToDraw = "./images/Moon-7.png"
     elif moonPhase <= .32:   #waxing quarter
-        imageToDraw = "./images/Moon-6"
+        imageToDraw = "./images/Moon-6.png"
     elif moonPhase <= .45:  #waxing gibbous
-        imageToDraw = "./images/Moon-5"
+        imageToDraw = "./images/Moon-5.png"
     elif moonPhase <= .57:   #full moon
-        imageToDraw = "./images/Moon-4"
+        imageToDraw = "./images/Moon-4.png"
     elif moonPhase <= .69:  #waning gibbous
-        imageToDraw = "./images/Moon-3"
+        imageToDraw = "./images/Moon-3.png"
     elif moonPhase <= .81:   #waning quarter
-        imageToDraw = "./images/Moon-2"
+        imageToDraw = "./images/Moon-2.png"
     elif moonPhase <= .93:    #waning crescent
-        imageToDraw = "./images/Moon-1"
+        imageToDraw = "./images/Moon-1.png"
     moon = image.imread(imageToDraw)
     box = OffsetImage(moon,zoom=.15)
     ab = AnnotationBbox(box,(moonAz,moonEl),frameon=False)
@@ -52,17 +52,17 @@ def drawMap(allStars,constellations,moonPhase,moonAz,moonEl):
 
     #add labels
     ax.margins(0, 0)
-    unlabeledBuf = io.BytesIO()
+    # unlabeledBuf = io.BytesIO()
     plt.axis('off')
     ax.set_xlim(-2, 2)
     ax.set_ylim(-2, 2)
-    plt.savefig(unlabeledBuf,format="png",dpi=300,bbox_inches='tight')
+    # plt.savefig(unlabeledBuf,format="png",dpi=300,bbox_inches='tight')
     for i, txt in enumerate(allStars['label']):
         ax.annotate(txt, (allStars['x'][i], allStars['y'][i]),color="white")
 
     buf = io.BytesIO()
-    # plt.show()
-    plt.savefig(buf,format="png",dpi=300,bbox_inches='tight')
-    buf = b64encode(buf.getvalue()).decode()
-    unlabeledBuf = b64encode(unlabeledBuf.getvalue()).decode()
-    return [buf,unlabeledBuf]
+    plt.show()
+    # plt.savefig(buf,format="png",dpi=300,bbox_inches='tight')
+    # buf = b64encode(buf.getvalue()).decode()
+    # unlabeledBuf = b64encode(unlabeledBuf.getvalue()).decode()
+    # return [buf,unlabeledBuf]

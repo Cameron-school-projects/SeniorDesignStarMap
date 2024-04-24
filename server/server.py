@@ -7,7 +7,6 @@ from pyHandler import *
 from flask_cors import CORS
 from flask import request
 
-
 app = Flask(__name__)
 cors = CORS(app)
 @app.route("/getStarData",methods=['POST'])
@@ -21,6 +20,6 @@ def server():
     return bufToReturn
 # createDatabase()
 # parseCSVStars()
-# makeMap("6:30PM","11/08/2002","33-52-11.44N","151-12-29.82W")
+makeMap("9:30PM","12/08/2002","33-52-11.44N","151-12-29.82W")
 
        

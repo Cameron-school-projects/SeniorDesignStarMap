@@ -19,11 +19,6 @@ def checkDB():
             createDatabase()
             print ("Table created.")
             parseCSVStars()
-
-            #test lines
-            #query = '''INSERT INTO music(name, game, location, theme, instrument, vibe) VALUES(?, ?, ?, ?, ?, ?)'''
-            #cursor.execute(query, ("Song of Time", "Ocarina of Time, Majora's Mask", "temple, anywhere", "time, playable, magic", "ocarina", "magic, solo, divine"))
-
             connection.commit()
                 
         

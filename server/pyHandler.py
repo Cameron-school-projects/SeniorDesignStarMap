@@ -35,15 +35,11 @@ def checkDB():
     
 def getMoonAzEL(obsLat,obsLong,JD,siderealTime):
     moonLat,moonLong = getMoonLocation(JD)
-    # print(moonLat)
-    # print(moonLong)
     changeInLon = moonLong - obsLong
     y = math.sin(changeInLon) * math.cos(moonLat)
     x = math.cos(obsLat)*math.sin(moonLat) - math.sin(obsLat)*math.cos(moonLat)*math.cos(changeInLon)
     az = math.atan2(y,x)
-    print(az)
     el = math.acos((math.sin(obsLat)*math.sin(moonLong))+(math.cos(obsLat)*math.cos(moonLong)*math.cos(siderealTime)))
-    print(el)
     return az,el
 
     
@@ -80,13 +76,13 @@ def makeMap(time, date, lat,lon):
         #suns magnitude is so big we need to diminish it 
         allStars['x'].append(tempAz)
         allStars['y'].append(tempEl)
-        print(tempEl)
-        allStars['color'].append('white')
         if(star[6]=='Sol'):
             allStars['mag'].append((3 ** ( star[9]/ -2.5)))
+            allStars['color'].append('yellow')
         else:
-            allStars['mag'].append((100*10**(star[9]/-2.5))+10)
-            print((100*10**(star[9]/-2.5))+10)
+            allStars['mag'].append((100*10**(star[9]/-2.5)))
+            allStars['color'].append('white')
+
         if(star[6]!=''):
             allStars['label'].append(star[6])
         # if(star[10]=='Taurus'):

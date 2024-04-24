@@ -20,7 +20,7 @@ def drawMap(allStars,constellations,moonPhase,moonAz,moonEl):
     border = patches.Circle((0,0),2, color='#000080', fill=True)
     ax.add_patch(border)
     ax.scatter(allStars['x'], allStars['y'],
-     s=1
+     s=allStars['mag']
 ,color=allStars['color'], marker='.', linewidths=2, 
     zorder=2)
     horizon = patches.Circle((0, 0), 2, transform=ax.transData)

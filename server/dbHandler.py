@@ -81,8 +81,6 @@ def parseCSVStars():
         for idx,item in enumerate(constellationReferences.get(key)):
             starToInsert = [(key),(idx+1),(item)]
             if(key=='Aries'):
-                print("Aries")
-                print(starToInsert)
             cursor.execute("UPDATE stars SET constellation=?, constellationNum=? WHERE id=?",starToInsert)
     connection.commit()
 

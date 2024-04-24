@@ -21,6 +21,6 @@ def server():
     return bufToReturn
 # createDatabase()
 # parseCSVStars()
-# makeMap("1:30PM","05/08/2002","33-52-11.44S","151-12-29.82E")
+makeMap("6:30PM","11/08/2002","33-52-11.44N","151-12-29.82W")
 
        

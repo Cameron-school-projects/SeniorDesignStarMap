@@ -12,6 +12,7 @@ timezonefinder = "*"
 pyqt5 = "*"
 flask = "*"
 flask-cors = "*"
+ephem = "*"
 
 [dev-packages]
 

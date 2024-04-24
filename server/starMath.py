@@ -10,6 +10,7 @@ from astropy.time import Time
 from astropy import units as u
 from datetime import timezone
 from astropy.coordinates import get_body
+import ephem
 #constants :/
 RADS = math.pi / 180
 DEGS = 180 / math.pi
@@ -220,42 +221,52 @@ def decDegToDMS(degree):
     s = (((degree - d)*60.0)-m)*60.0 
     return d, m, s
 
-def getMoonPhase(time, julianDate, location):
+def getMoonPhase(currentDate):
+    ephemDate = ephem.Date(currentDate)
+    nnm = ephem.next_new_moon(ephemDate)
+    pnm = ephem.previous_new_moon(ephemDate)
+
+    phase = (ephemDate-pnm)/(nnm-pnm)
+    return phase
+  #Note that there is a ephem.Moon().phase() command, but this returns the
+  #percentage of the moon which is illuminated. This is not really what we want.
+
+
     #gets moon phase
     #takes the date as a float, where Feb 1, 2009 is 2009.087
-    k = (year-1900.0)*12.3685
+    # k = (year-1900.0)*12.3685
     #T = k / 1236.85
     #i have no idea what the math says so I guess this is happening now
     #124.2322 is a full moon --> 0.566
     #124.1913 is a new moon --> 0.060
 
-    phase = k%1
-    if phase <= 0.1 or phase>.93:     #new moon
-        return 0
-    elif phase <= 0.19:   #waxing crescent
-        return 1
-    elif phase <= .32:   #waxing quarter
-        return 2
-    elif phase <= .45:  #waxing gibbous
-        return 3
-    elif phase <= .57:   #full moon
-        return 4
-    elif phase <= .69:  #waning gibbous
-        return 5
-    elif phase <= .81:   #waning quarter
-        return 6
-    elif phase <= .93:    #waning crescent
-        return 7
+    # phase = k%1
+    # if phase <= 0.1 or phase>.93:     #new moon
+    #     return 0
+    # elif phase <= 0.19:   #waxing crescent
+    #     return 1
+    # elif phase <= .32:   #waxing quarter
+    #     return 2
+    # elif phase <= .45:  #waxing gibbous
+    #     return 3
+    # elif phase <= .57:   #full moon
+    #     return 4
+    # elif phase <= .69:  #waning gibbous
+    #     return 5
+    # elif phase <= .81:   #waning quarter
+    #     return 6
+    # elif phase <= .93:    #waning crescent
+    #     return 7
 
     #return the phase based on a threshold
     #if 8, something went wrong
     return 8
 
-def getMoonLocation(T):
+def getMoonLocation(JD):
     #gets moon's location
     #input date
-    #those are some ugly formulas :((
-    T = (getJD(date)-2415020.0) / 36525
+    #those are some ugly formulas :((   
+    T = (JD-2415020.0) / 36525
 
     moonL = 270.434164 + 481267.8831*T
     sunM = 358.475833 + 35999.0498*T
@@ -265,8 +276,8 @@ def getMoonLocation(T):
 
     e = 1 - 0.002495*T - 0.00000752*T*T
 
-    moonLon = moonL + (6.288750 * math.sin(moonM*RADS)) + (1.274018 * math.sin((2*moonD - moonM)*RADS)) + (0.658309 * math.sin((2*moonD)*RADS)) + (0.213616 * math.sin((2*moonM)*RADS)) - (0.185596 * math.sin((sunM)*RADS) * e) - (0.114336 * math.sin(2*F*RADS)) + (0.058793 * math.sin((2*moonD - 2*moonM)*RADS)) + (0.057212 * math.sin((2*moonD - sunM - moonM)*RADS) * e) + (0.053320 * math.sin((2*moonD + moonM)*RADS)) + (0.045874 * math.sin((2*moonD - sunM) * RADS) * e)
-    moonLat = (5.128189 * math.sin(F*RADS)) + 0.280606 * math.sin((moonM + F)*RADS) + (0.277693 * math.sin((moonM - F)*RADS)) + (0.173238 * math.sin((2*moonD - F)*RADS)) + (0.055413 * math.sin((2*moonD + F - moonM)*RADS)) + (0.046272 * math.sin((2*moonD - F - moonM)*RADS)) + (0.032573 * math.sin((2*moonD + F)*RADS)) + (0.017198 * math.sin((2*moonM + F)*RADS)) + (0.009267 * math.sin((2*moonD + moonM - F)*RADS)) + (0.008823 * math.sin((2*moonM - F)*RADS))
+    moonLon = moonL + (6.288750 * math.sin(math.radians(moonM))) + (1.274018 * math.sin(math.radians(2*moonD - moonM))) + (0.658309 * math.sin(math.radians(2*moonD))) + (0.213616 * math.sin(math.radians(2*moonM))) - (0.185596 * math.sin(math.radians(sunM)) * e) - (0.114336 * math.sin(math.radians(2*F))) + (0.058793 * math.sin(math.radians(2*moonD - 2*moonM))) + (0.057212 * math.sin(math.radians(2*moonD - sunM - moonM)) * e) + (0.053320 * math.sin(math.radians(2*moonD + moonM))) + (0.045874 * math.sin(math.radians(2*moonD - sunM)) * e)
+    moonLat = (5.128189 * math.sin(math.radians(F))) + 0.280606 * math.sin(math.radians(moonM + F)) + (0.277693 * math.sin(math.radians(moonM - F))) + (0.173238 * math.sin(math.radians(2*moonD - F))) + (0.055413 * math.sin(math.radians(2*moonD + F - moonM))) + (0.046272 * math.sin(math.radians(2*moonD - F - moonM))) + (0.032573 * math.sin(math.radians(2*moonD + F))) + (0.017198 * math.sin(math.radians(2*moonM + F))) + (0.009267 * math.sin(math.radians(2*moonD + moonM - F))) + (0.008823 * math.sin(math.radians(2*moonM - F)))
 
     #return moon's geocentric longitude and latitude
     return moonLon, moonLat

@@ -79,9 +79,10 @@ def parseCSVStars():
         connection.commit()
     for key in constellationReferences:
         for idx,item in enumerate(constellationReferences.get(key)):
-            print(idx+1)
-            print(item)
             starToInsert = [(key),(idx+1),(item)]
+            if(key=='Aries'):
+                print("Aries")
+                print(starToInsert)
             cursor.execute("UPDATE stars SET constellation=?, constellationNum=? WHERE id=?",starToInsert)
     connection.commit()
 
@@ -154,10 +155,11 @@ def getAllVisibleStars(observerLat,observerLong,LST):
     queryString=""
     observerDec = observerLat
     observerRA = LST    
-    if(observerLat<0):
-        queryString = "SELECT * FROM stars WHERE (dec + ? ) < -90"
-    else:
-        queryString = "SELECT * FROM stars WHERE (dec + ?) > 90"
+    queryString="SELECt * from stars ORDER BY constellationNum"
+    # if(observerLat<0):
+    #     queryString = "SELECT * FROM stars WHERE (dec + ? ) < -90"
+    # else:
+    #     queryString = "SELECT * FROM stars WHERE (dec + ?) > 90"
     # build query based on lat/long of observer
     # if(observerLong<0):        
     #     queryString = "SELECT * FROM stars WHERE RA BETWEEN ? AND 0"
@@ -187,9 +189,10 @@ def getAllVisibleStars(observerLat,observerLong,LST):
     #     queryString = queryString+" AND dec BETWEEN ? AND ? ORDER BY constellationNum"
     allParams = [(observerLat)]
     #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
-    allStars = cursor.execute(queryString,allParams)
+    allStars = cursor.execute(queryString)
     allStars = allStars.fetchall()
     visibleStars = checkStarVisibility(allStars,observerLat,LST)
+    print(len(visibleStars))
     return visibleStars
 
 

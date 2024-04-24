@@ -12,23 +12,41 @@ def getStarInfo():
     #I assume this will be needed to hold some info? Could be useless/extraneous idk
     return
 
-def drawMap(allStars,constellations):
+def drawMap(allStars,constellations,moonPhase,moonAz,moonEl):
+    imageToDraw = ""
     constellationLines = []
     chart_size = 2
     fig, ax = plt.subplots(figsize=(30,30))
-    border = patches.Circle((0,0),2, color='navy', fill=True)
+    border = patches.Circle((0,0),2, color='#000080', fill=True)
     ax.add_patch(border)
     ax.scatter(allStars['x'], allStars['y'],
-     s=15
+     s=1
 ,color=allStars['color'], marker='.', linewidths=2, 
     zorder=2)
     horizon = patches.Circle((0, 0), 2, transform=ax.transData)
     for col in ax.collections:
         col.set_clip_path(horizon)
-    # constellation = image.imread("tarus.png")
-    # box = OffsetImage(constellation,zoom=.15)
-    # ab = AnnotationBbox(box,constellations['Taurus'][0],frameon=False)
-    # ax.add_artist(ab)
+
+    if moonPhase <= 0.1 or moonPhase>.93:     #new moon
+        imageToDraw = "./images/Moon-8.png"
+    elif moonPhase <= 0.19:   #waxing crescent
+        imageToDraw = "./images/Moon-7.png"
+    elif moonPhase <= .32:   #waxing quarter
+        imageToDraw = "./images/Moon-6"
+    elif moonPhase <= .45:  #waxing gibbous
+        imageToDraw = "./images/Moon-5"
+    elif moonPhase <= .57:   #full moon
+        imageToDraw = "./images/Moon-4"
+    elif moonPhase <= .69:  #waning gibbous
+        imageToDraw = "./images/Moon-3"
+    elif moonPhase <= .81:   #waning quarter
+        imageToDraw = "./images/Moon-2"
+    elif moonPhase <= .93:    #waning crescent
+        imageToDraw = "./images/Moon-1"
+    moon = image.imread(imageToDraw)
+    box = OffsetImage(moon,zoom=.15)
+    ab = AnnotationBbox(box,(moonAz,moonEl),frameon=False)
+    ax.add_artist(ab)
     # for key,value in constellations.items():
     #     ax.add_collection(LineCollection(value,colors="#ffff",linewidths=.5))
 

@@ -18,10 +18,11 @@ export default function Home() {
   const [image,setImage] = useState("")
   const [labeledImage,setLabeledImage] = useState("")
   const [showLabels,setShowLabels] = useState(false)
-
+  //toggles if labels are to be shown 
   const handleLabelSwap = ()=>{
     setShowLabels(!showLabels)
   }
+  //renders labeled/unlabeled map depending on current preference 
   function selectImage(){
     if(showLabels){
       return (<ImageBox imageUrl={labeledImage} altText="I mean it should be the starmap" />)
@@ -74,6 +75,7 @@ export default function Home() {
         height: '16vh',
         
       }}>
+        {/* popup with helpful information */}
       <InfoDialog />
      
       </div>
@@ -90,7 +92,7 @@ export default function Home() {
       height: '16vh',
 
     }}>
-
+      
       {selectImage()}
 
 

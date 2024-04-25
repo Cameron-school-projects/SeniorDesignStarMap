@@ -11,10 +11,10 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
-// Define the props in case you need to customize labels or add more props in the future
+// The Left Column component requires the state setters for both possible star map images (labeled and unlabeled), the current image to download should the user request it,
+// and the state setter for if labels are to be shown on the star map
 interface LeftColumnProps {
   labelImageSet: Function;
   unlabeledSet: Function;
@@ -26,30 +26,37 @@ interface LeftColumnProps {
 const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, imageToDownload, setLabels }) => {
   const [latVal, setLatVal] = useState("34-52-11.44N")
   const [lonVal, setLonVal] = useState("6-58-29.82E")
-  const [timeVal, setTimeVal] = useState("10:00AM")
+  const [timeVal, setTimeVal] = useState("10:00")
   const [dateVal, setDateVal] = useState(dayjs())
   const [dateString, setDateString] = useState(dayjs().format("MM/DD/YYYY"))
   //checks to make sure user entered latitude in correct format
-  const handleLatChange = (val: string) => {
+  const checkLat = (val: string) => {
     //check if latitude is in correct format with regular expression
     const latRegex = new RegExp(/\d{1,3}-\d{1,2}-\d{1,2}.\d{1,2}(N|S)/gm)
+    //if true, format is correct! 
     if (latRegex.test(val)) {
-      setLatVal(val)
+      return true
     }
+    //incorrect format entered, reset input and prompt to try again
     else {
       console.error("incorrect format! Try again!")
       setLatVal("")
+      return false
     }
   }
-  const handleLongChange = (val: string) => {
+  //verifies longitude is in correct format 
+  const checkLon = (val: string) => {
     //check if longitude is in correct format with regular expression
     const latRegex = new RegExp(/\d{1,3}-\d{1,2}-\d{1,2}.\d{1,2}(E|W)/gm)
+    //if true, format is correct! 
     if (latRegex.test(val)) {
-      setLonVal(val)
+      return true
     }
+    //incorrect format entered, reset input and prompt to try again
     else {
       console.log("incorrect format!")
       setLonVal("")
+      return false
     }
   }
   const handleTimeValChange = (val: string | null) => {
@@ -68,13 +75,18 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
         timeOfDay = "PM"
       }
       else {
+        //0:00 is actually midnight (12 AM)
+        if(intVal==0){
+          intVal=12
+        }
         timeOfDay = "AM"
       }
       //construct 12 hour time string, format HH:MM AM/PM
       const newDate = `${intVal}:${timeParts[1]}${timeOfDay}`
-      setTimeVal(newDate)
+      return newDate
     }
   }
+  //set date used by MUI date picker, and the date string we will be sending to the backend
   const handleDateChange = (val: Dayjs | null) => {
     if (val) {
       setDateVal(val)
@@ -82,25 +94,43 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
 
     }
   }
+  const handleLabels=() =>{
+    setLabels()
+  }
   //post data to server
   function generateStarMap() {
-    axios.post('http://localhost:5000/getStarData', {
+    if(checkLat(latVal) && checkLon(lonVal)){
+      let formattedTime = handleTimeValChange(timeVal)
+      axios.post('http://localhost:5000/getStarData', {
 
       lat: latVal,
       lon: lonVal,
       date: dateString,
-      time: timeVal,
+      time: formattedTime,
 
     })
       .then((response: any) => {
-
+        //set both labeled and unlabeled images 
         let imageToDisplay = "data:image/png;base64," + response.data[0]
         unlabeledSet(imageToDisplay)
         imageToDisplay = "data:image/png;base64," + response.data[1]
         labelImageSet(imageToDisplay)
+        //reset user input
+        setLatVal("")
+        setLonVal("")
+        setDateVal(dayjs())
+        setDateString(dayjs().format('MM/DD/YYY'))
+        setTimeVal("10:00AM")
 
       })
+      .catch((err:any)=>{
+        console.error(`Request failed with the following error: ${err}`)
+      })
+
+    }
+
   }
+  //downloads current star map a png
   function downloadImage() {
     var a = document.createElement("a"); //Create <a>
     a.href = imageToDownload; //Image Base64 Goes here
@@ -112,20 +142,20 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
       <Grid container spacing={2}>
         <Grid item xs={10}>
           <div style={{ marginBottom: '20px' }}>
-            <TextField label="Latitude" value={latVal} onChange={(e) => { handleLatChange(e.target.value) }} style={{ height: '5vh', width: '100%', padding: '2px', fontFamily: 'monospace', fontSize: '15px',marginBottom:'10px' }}>Latitude</TextField>
+            <TextField label="Latitude" value={latVal} onChange={(e) => { setLatVal(e.target.value) }} style={{ height: '5vh', width: '100%', padding: '2px', fontFamily: 'monospace', fontSize: '15px',marginBottom:'10px' }}>Latitude</TextField>
             <label>Format: DDD-MM-SS.SS[N|S]</label>
           </div>
         </Grid>
         <Grid item xs={10}>
           <div style={{ marginBottom: '20px' }}>
-            <TextField label="Longitude" value={lonVal} onChange={(e) => { handleLongChange(e.target.value) }} style={{ height: '5vh', width: '100%', padding: '2px', fontFamily: 'monospace', fontSize: '15px',marginBottom:'10px' }}>Longitude</TextField>
+            <TextField label="Longitude" value={lonVal} onChange={(e) => { setLonVal(e.target.value) }} style={{ height: '5vh', width: '100%', padding: '2px', fontFamily: 'monospace', fontSize: '15px',marginBottom:'10px' }}>Longitude</TextField>
             <label>Format: DDD-MM-SS.SS[N|S]</label>
           </div>
         </Grid>
         <Grid item xs={10}>
           <div style={{ marginBottom: '20px' }}>
             <label>Clock Time</label>
-            <TimePicker value={timeVal} onChange={(e) => { handleTimeValChange(e) }}></TimePicker>
+            <TimePicker value={timeVal} onChange={(e) => { setTimeVal(e||"10:00") }}></TimePicker>
           </div>
         </Grid>
         <Grid item xs={12}>
@@ -147,7 +177,7 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
           </Button>
         </Grid>
         <Grid item xs={8}>
-          <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={() => setLabels}>
+          <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={handleLabels}>
             Toggle Labels
           </Button>
         </Grid>

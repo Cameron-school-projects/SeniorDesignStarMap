@@ -61,7 +61,7 @@ def drawMap(allStars,constellations,moonPhase,moonAz,moonEl):
     plt.axis('off')
     ax.set_xlim(-2, 2)
     ax.set_ylim(-2, 2)
-    # plt.savefig(unlabeledBuf,format="png",dpi=300,bbox_inches='tight')
+    plt.savefig(unlabeledBuf,format="png",dpi=300,bbox_inches='tight')
     for i, txt in enumerate(allStars['label']):
         ax.annotate(txt, (allStars['x'][i], allStars['y'][i]),color="white")
 
@@ -70,8 +70,8 @@ def drawMap(allStars,constellations,moonPhase,moonAz,moonEl):
         ax.annotate(key,(constellations[key][0],constellations[key][1]),color="white")
 
     buf = io.BytesIO()
-    plt.show()
-    # plt.savefig(buf,format="png",dpi=300,bbox_inches='tight')
-    # buf = b64encode(buf.getvalue()).decode()
-    # unlabeledBuf = b64encode(unlabeledBuf.getvalue()).decode()
-    # return [buf,unlabeledBuf]
+    # plt.show()
+    plt.savefig(buf,format="png",dpi=300,bbox_inches='tight')
+    buf = b64encode(buf.getvalue()).decode()
+    unlabeledBuf = b64encode(unlabeledBuf.getvalue()).decode()
+    return [buf,unlabeledBuf]

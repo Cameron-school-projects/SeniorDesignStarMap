@@ -62,7 +62,7 @@ def makeMap(time, date, lat,lon):
                 allStars['y'].append(tempel)
                 allStars['color'].append(allPlanets[planet][12])
                 if(planet=="Sun"):
-                    allStars['mag'].append(100)
+                    allStars['mag'].append(10000)
                 else:
                     allStars['mag'].append(10)
 

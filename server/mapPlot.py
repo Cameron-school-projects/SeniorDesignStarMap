@@ -14,7 +14,7 @@ def getStarInfo():
 
 def drawMap(allStars,constellations,moonPhase,moonAz,moonEl):
     imageToDraw = ""
-    fig, ax = plt.subplots(figsize=(30,30))
+    fig, ax = plt.subplots(figsize=(20,20))
     border = patches.Circle((0,0),2, color='#000080', fill=True)
     ax.add_patch(border)
     # allStars['color'] = cl.ListedColormap(allStars['color'])

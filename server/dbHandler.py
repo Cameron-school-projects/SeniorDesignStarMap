@@ -1,5 +1,5 @@
 import sqlite3
-from starMath import checkStarVisibility
+from starMath import checkConstellationVisibility, checkStarVisibility
 constellationReferences = {
     'Aries':[9257,6147,6195,6888],
     'Taurus':[18796,15108,14714,14183,14373,14710,18021,13110,11284],
@@ -96,11 +96,11 @@ def addPlanets():
                   "Earth":[100.46435,129597740.6,1.00000011,0.00000005,0.01671022,0.00003804,0.00005,46.94,102.94719,1198.28,-11.26064,18228.25,'blue'],
                   "Mars":	[55.45332,68905103.78,1.52366231,0.00007221,0.09341233,0.00011902,1.85061,25.47,336.04084,1560.78,49.57854,1020.19,'red'],
                   "Jupiter":	[34.40438,10925078.35,5.20336301,0.00060737,0.04839266,0.0001288,1.3053,-4.15,14.75385,839.93,100.55615,1217.17,'whitesmoke'],
-                  "Saturn":	[49.94432,4401052.95,9.53707032,0.0030153,0.0541506,0.00036762,2.48446,6.11,92.43194,1948.89,113.71504,1591.05,'yellow'],
+                  "Saturn":	[49.94432,4401052.95,9.53707032,0.0030153,0.0541506,0.00036762,2.48446,6.11,92.43194,1948.89,113.71504,1591.05,'gold'],
                    "Uranus":	[313.23218,1542547.79,19.19126393,0.00152025,0.04716771,0.0001915,0.76986,2.09,170.96424,1312.56,74.22988,1681.4,'lightblue'],
                    "Neptune":	[304.88003,786449.21,30.06896348,0.00125196,0.00858587,0.00125196,1.76917,3.64,44.97135,844.43,131.72169,151.25,'steelblue'],
                    "Pluto":	[238.92881,522747.9,39.48168677,0.00076912,0.24880766,0.00006465,17.14175,11.07,224.06676,132.25,110.30347,37.33,'powderblue'],
-                   "Sun":[100.46435,129597740.6,1.00000011,0.00000005,0.01671022,0.00003804,0.00005,46.94,102.94719,1198.28,-11.26064,18228.25,'coral'],
+                   "Sun":[100.46435,129597740.6,1.00000011,0.00000005,0.01671022,0.00003804,0.00005,46.94,102.94719,1198.28,-11.26064,18228.25,'darkorange'],
                   }
     for idx,key in enumerate(planetVals):
         tempVals = [idx,key,planetVals[key][0],planetVals[key][1],planetVals[key][2],planetVals[key][3],planetVals[key][4],planetVals[key][5],planetVals[key][6],planetVals[key][7],planetVals[key][8],planetVals[key][9],planetVals[key][10],planetVals[key][11],None,planetVals[key][12]]
@@ -146,50 +146,17 @@ def close(connectionName, cursorName = False):
         #allStars[8] = dec
         #allStars[9] = magnitude
         #allStars[10] = constellation(if applicable)
-def getAllVisibleStars(observerLat,observerLong,LST):
+def getAllVisibleObjects(observerLat,observerLong,LST):
     connection =  sqlite3.connect("stars.db")
     cursor = connection.cursor()
-    queryString=""
-    observerDec = observerLat
-    observerRA = LST    
-    queryString="SELECt * from stars ORDER BY constellationNum"
-    # if(observerLat<0):
-    #     queryString = "SELECT * FROM stars WHERE (dec + ? ) < -90"
-    # else:
-    #     queryString = "SELECT * FROM stars WHERE (dec + ?) > 90"
-    # build query based on lat/long of observer
-    # if(observerLong<0):        
-    #     queryString = "SELECT * FROM stars WHERE RA BETWEEN ? AND 0"
-    # else:
-    #     #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
-    #     queryString = "SELECT * FROM stars WHERE RA BETWEEN ? AND 24"
-    # if(observerLat<0):        
-    #     visibleLong2=(90+observerLat)
-    #     visibleLong1 = (90-observerLat)
-    #     tempLong =visibleLong2%180 
-    #     if(-tempLong!=visibleLong2):
-    #         visibleLong2=tempLong
-    #     tempLong = visibleLong1%180
-    #     if(-tempLong!=visibleLong1):
-    #         visibleLong1=tempLong
-    #     queryString = queryString+" AND dec BETWEEN ? AND ? ORDER BY constellationNum"
-    # else:
-        
-    #     visibleLong1=(90-observerLat)
-    #     visibleLong2 = (90+observerLat)
-    #     tempLong =visibleLong1%180 
-    #     if(tempLong!=visibleLong1 or -tempLong!=visibleLong1):
-    #         visibleLong1=-tempLong
-    #     tempLong = visibleLong2%180
-    #     if(tempLong!=visibleLong2):
-    #         visibleLong2=tempLong
-    #     queryString = queryString+" AND dec BETWEEN ? AND ? ORDER BY constellationNum"
-    allParams = [(observerLat)]
-    #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
-    allStars = cursor.execute(queryString)
+    allStars = cursor.execute("SELECT * from stars WHERE properName!='Sol' ORDER BY constellationNum")
     allStars = allStars.fetchall()
+    allConstellations = cursor.execute("SELECT * FROM constellations")
+    allConstellations = allConstellations.fetchall()
+    visibleConstellations = checkConstellationVisibility(allConstellations,observerLat,LST)
     visibleStars = checkStarVisibility(allStars,observerLat,LST)
-    print(len(visibleStars))
-    return visibleStars
+
+    return visibleStars,visibleConstellations
+
 
 

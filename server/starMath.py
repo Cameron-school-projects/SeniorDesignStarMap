@@ -9,8 +9,8 @@ from astropy.coordinates import EarthLocation
 from astropy.time import Time
 from astropy import units as u
 from datetime import timezone
-from astropy.coordinates import get_body
 import ephem
+from PyAstronomy import pyasl
 #constants :/
 RADS = math.pi / 180
 DEGS = 180 / math.pi
@@ -43,6 +43,7 @@ def getDate(JD):
 #assumes that date is a string representing current date in mm/dd/yy or mm/dd/yyyy format 
 #returns string
 def getJD(date):
+
     months = float(date.month)
     days = float(date.day)
     years = float(date.year)
@@ -52,16 +53,6 @@ def getJD(date):
     UT = hours+mins
     JD = (367*years) - int((7*(years+int((months+9)/12)))/4) + int((275*months)/9) + days + 1721013.5 + (UT/24)
     return JD
-#returns GST for current time,
-#expects localTime to be a datetime object
-def getGST(localTime):
-    epoch = datetime(2004,1,1)
-    timeDelta = localTime-epoch
-    secondsToDeduct = timeDelta.days* 236
-    #integer division
-    hours = timeDelta.seconds//3600
-    secondsToDeduct = secondsToDeduct + (hours-10*(hours))
-    return (localTime - timedelta(seconds=secondsToDeduct))
 
 def convertLatAndLong(location):
     multiplier = 1 if location[-1] in ['N', 'E'] else -1
@@ -139,7 +130,6 @@ def getPlanetRADec(planetData, earthData, JD):
     #planet math. Can be run individually for each planet
     #cy = JD / 36525 where JD is julian date counted from 2000
     #returns RA and Dec of the planet
-
     planet = getOrbitalElements(planetData, JD)
     earth = getOrbitalElements(earthData, JD)
 
@@ -166,25 +156,25 @@ def getPlanetRADec(planetData, earthData, JD):
     yeq = yg * math.cos(ecl) - zg*math.sin(ecl)
     zeq = yg * math.sin(ecl) + zg*math.cos(ecl)
 
-    ra = mod2Pi(math.atan2(yeq, xeq)) * DEGS
-    dec = math.atan(zeq/math.sqrt(xeq**2 + yeq**2)) * DEGS
-    
+    ra = math.atan2(yeq, xeq)
+    dec = math.atan(zeq/math.sqrt(xeq**2 + yeq**2)) 
+
     return ra, dec
 
 def getPlanetAzEl(lat, lon, ra, dec,LST):
     #not sure if this is different from star RA and Dec but we'll see I guess
     #takes in latitude, longitude, and ra and dec in degrees
     #returns planet azimuth and elevation
-    if (lat<0):
-        lat *= -1
-    if lon < 0:
-        lon *= -1
+    # if (lat<0):
+    #     lat *= -1
+    # if lon < 0:
+    #     lon *= -1
     A = LST - ra   #this is a vague time object. We'll figure it out later
-    if A<0:
-        A += 360
-    decRad = dec * RADS
-    latRad = lat * RADS
-    hRad = lat*RADS
+    # if A<0:
+    #     A += 360
+    decRad = dec 
+    latRad = lat 
+    hRad = lat
 
     #find altitude in radians, which I'm assuming is also elevation
     sinEl = (math.sin(decRad) * math.sin(latRad)) + (math.cos(decRad) * math.cos(latRad) * math.cos(hRad))
@@ -193,16 +183,12 @@ def getPlanetAzEl(lat, lon, ra, dec,LST):
     #calculate azimuth in radians
     try:
         cosAz = (math.sin(decRad) - math.sin(el) * math.sin(latRad)) / (math.cos(el) * math.cos(latRad))
-        az = math.acos(cosAz)
+        az = cosAz
+        # az = math.acos(cosAz)
     except:
         az = 0
-    
-    el *= DEGS
-    az *= DEGS
-    
-    if(math.sin(hRad>0)):
-        az = 360-az 
 
+    # print((az,el))
     return az, el
 
 def raDegToHMS(degree):
@@ -260,12 +246,11 @@ def getMoonPhase(currentDate):
 
     #return the phase based on a threshold
     #if 8, something went wrong
-    return 8
+    # return 8
 
 def getMoonLocation(JD):
     #gets moon's location
-    #input date
-    #those are some ugly formulas :((   
+    res = pyasl.moonpos(JD,radian=True) 
     T = (JD-2415020.0) / 36525
 
     moonL = 270.434164 + 481267.8831*T
@@ -280,7 +265,7 @@ def getMoonLocation(JD):
     moonLat = (5.128189 * math.sin(math.radians(F))) + 0.280606 * math.sin(math.radians(moonM + F)) + (0.277693 * math.sin(math.radians(moonM - F))) + (0.173238 * math.sin(math.radians(2*moonD - F))) + (0.055413 * math.sin(math.radians(2*moonD + F - moonM))) + (0.046272 * math.sin(math.radians(2*moonD - F - moonM))) + (0.032573 * math.sin(math.radians(2*moonD + F))) + (0.017198 * math.sin(math.radians(2*moonM + F))) + (0.009267 * math.sin(math.radians(2*moonD + moonM - F))) + (0.008823 * math.sin(math.radians(2*moonM - F)))
 
     #return moon's geocentric longitude and latitude
-    return moonLon, moonLat
+    return res[3], res[4]
 
 def GST(date,lat,lon):
     dateUTC = getUTC(lat,lon,date)
@@ -321,3 +306,13 @@ def checkStarVisibility(allStars,lat,LST):
         if(tempAlt>0):
             visibleStars.append(star)
     return visibleStars
+
+
+def checkConstellationVisibility(allConstellations,lat,LST):
+    visibleConstellations=[]
+    for constellation in allConstellations:
+        tempAlt = (math.sin(lat)*math.sin(constellation[2])+math.cos(lat)*math.cos(constellation[2])*math.cos(LST))
+        tempAlt = math.asin(tempAlt)
+        if(tempAlt>0):
+            visibleConstellations.append(constellation)
+    return visibleConstellations

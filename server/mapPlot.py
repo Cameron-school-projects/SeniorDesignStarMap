@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as image
 from starMath import *
 import matplotlib.patches as patches
-from matplotlib.collections import LineCollection
+from matplotlib import colors as cl
 import io
 from base64 import b64encode
 from PIL import Image
@@ -14,14 +14,13 @@ def getStarInfo():
 
 def drawMap(allStars,constellations,moonPhase,moonAz,moonEl):
     imageToDraw = ""
-    constellationLines = []
-    chart_size = 2
     fig, ax = plt.subplots(figsize=(30,30))
     border = patches.Circle((0,0),2, color='#000080', fill=True)
     ax.add_patch(border)
+    # allStars['color'] = cl.ListedColormap(allStars['color'])
     ax.scatter(allStars['x'], allStars['y'],
      s=allStars['mag']
-,color=allStars['color'], marker='.', linewidths=2, 
+    ,c=allStars['color'], marker='.', linewidths=2, 
     zorder=2)
     horizon = patches.Circle((0, 0), 2, transform=ax.transData)
     for col in ax.collections:
@@ -47,8 +46,14 @@ def drawMap(allStars,constellations,moonPhase,moonAz,moonEl):
     box = OffsetImage(moon,zoom=.15)
     ab = AnnotationBbox(box,(moonAz,moonEl),frameon=False)
     ax.add_artist(ab)
-    # for key,value in constellations.items():
-    #     ax.add_collection(LineCollection(value,colors="#ffff",linewidths=.5))
+
+    #add constellation images
+    for key in constellations:
+        fileName = "./images/"+key+".png"
+        constImage = image.imread(fileName)
+        box = OffsetImage(constImage,zoom=.15)
+        ab = AnnotationBbox(box,(constellations[key][0],constellations[key][1]),frameon=False)
+        ax.add_artist(ab)
 
     #add labels
     ax.margins(0, 0)
@@ -59,6 +64,10 @@ def drawMap(allStars,constellations,moonPhase,moonAz,moonEl):
     # plt.savefig(unlabeledBuf,format="png",dpi=300,bbox_inches='tight')
     for i, txt in enumerate(allStars['label']):
         ax.annotate(txt, (allStars['x'][i], allStars['y'][i]),color="white")
+
+    #add constellation labels
+    for key in constellations:
+        ax.annotate(key,(constellations[key][0],constellations[key][1]),color="white")
 
     buf = io.BytesIO()
     plt.show()

@@ -20,6 +20,7 @@ def server():
     return bufToReturn
 # createDatabase()
 # parseCSVStars()
-makeMap("9:30PM","12/08/2002","33-52-11.44N","151-12-29.82W")
+# addPlanets()
+# makeMap("10:00PM","01/05/2008","34-52-11.44N","86-58-29.82E")
 
        

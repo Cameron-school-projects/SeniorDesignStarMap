@@ -7,30 +7,28 @@ import TimePicker from 'react-time-picker';
 import { TextField } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
-// import DatePicker from 'react-datepicker'
-// import "react-datepicker/dist/react-datepicker.css";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
+import ButtonGroup from '@mui/material/ButtonGroup';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 // Define the props in case you need to customize labels or add more props in the future
 interface LeftColumnProps {
-  labels: string[];
   labelImageSet:Function;
   unlabeledSet:Function;
   imageToDownload:string;
+  setLabels:Function;
 }
 
 
-const LeftColumn: React.FC<LeftColumnProps> = ({ labels,labelImageSet,unlabeledSet,imageToDownload }) => {
-  const [latVal,setLatVal] = useState("")
-  const [lonVal,setLonVal] = useState("")
-  const [timeVal,setTimeVal] = useState("10:00")
+const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet,unlabeledSet,imageToDownload,setLabels }) => {
+  const [latVal,setLatVal] = useState("34-52-11.44N")
+  const [lonVal,setLonVal] = useState("6-58-29.82E")
+  const [timeVal,setTimeVal] = useState("10:00AM")
   const [dateVal,setDateVal] = useState(dayjs())
-  const [dateString,setDateString] = useState("")
+  const [dateString,setDateString] = useState(dayjs().format("MM/DD/YYYY"))
   //checks to make sure user entered latitude in correct format
   const handleLatChange=(val:string)=>{
     //check if latitude is in correct format with regular expression
@@ -39,7 +37,7 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labels,labelImageSet,unlabeledS
       setLatVal(val)
     }
     else{
-      console.log("incorrect format!")
+      console.error("incorrect format! Try again!")
       setLatVal("")
     }
   }
@@ -80,13 +78,12 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labels,labelImageSet,unlabeledS
   const handleDateChange=(val:Dayjs|null)=>{
     if(val){
       setDateVal(val)
-      setDateString(val.format('DD/MM/YYYY'))
+      setDateString(val.format('MM/DD/YYYY'))
 
     }
   }
   //post data to server
-  function testPost(){
-    console.log("test")
+  function generateStarMap(){
     axios.post('http://localhost:5000/getStarData', {
 
     lat: latVal,
@@ -113,11 +110,11 @@ function downloadImage(){
   return (
     <div style={{ width: '200%', float: 'left', padding: '10px', textAlign: 'center', fontFamily: 'monospace', fontSize: '25px' }}> {/* Adjust the styling as needed */}
         <div style={{ marginBottom: '20px' }}>
-        <label>Latitude</label>
+        <label>Latitude (Format: DDD-DDD-DD.DD[N|S])</label>
         <TextField label="Latitude" value={latVal} onChange={(e)=>{handleLatChange(e.target.value)}} style={{height: '5vh', width: '100%' ,  padding: '2px', fontFamily: 'monospace', fontSize: '15px' }}>Latitude</TextField>
         </div>
         <div style={{marginBottom:'20px'}}>
-        <label>Longitude</label>
+        <label>Longitude (Format: DDD-DDD-DD.DD[E|W]</label>
         <TextField label="Longitude" value={lonVal} onChange={(e)=>{handleLongChange(e.target.value)}} style={{height: '5vh', width: '100%', padding: '2px', fontFamily: 'monospace', fontSize: '15px' }}>Longitude</TextField>
         </div>
         <div style={{ marginBottom: '20px' }}>
@@ -137,12 +134,17 @@ function downloadImage(){
       </DemoContainer>
     </LocalizationProvider>
         </div>
-        <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={testPost}>
+        <ButtonGroup variant="contained" aria-label="Star Map Options">
+        <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={generateStarMap}>
         Map it!
      </Button>
      <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={downloadImage}>
       Download Current Map
       </Button>
+      <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={()=>setLabels}>
+        Toggle Labels
+     </Button>
+     </ButtonGroup>
     </div>
   );
 };

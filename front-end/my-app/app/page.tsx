@@ -15,10 +15,13 @@ import {useState} from 'react';
 
 export default function Home() {
 
-  const labels = ['Latitude', 'Longitude', 'Date', 'Clock Time'];
   const [image,setImage] = useState("")
   const [labeledImage,setLabeledImage] = useState("")
   const [showLabels,setShowLabels] = useState(false)
+
+  const handleLabelSwap = ()=>{
+    setShowLabels(!showLabels)
+  }
   function selectImage(){
     if(showLabels){
       return (<ImageBox imageUrl={labeledImage} altText="I mean it should be the starmap" />)
@@ -56,7 +59,7 @@ export default function Home() {
       justifyContent: 'flex-start',
       height: '10vh',  
       }}> 
-      <LeftColumn labels={labels} labelImageSet={setLabeledImage} unlabeledSet={setImage} imageToDownload={showLabels ? image:labeledImage} />
+      <LeftColumn labelImageSet={setLabeledImage} unlabeledSet={setImage} setLabels={handleLabelSwap} imageToDownload={showLabels ? image:labeledImage} />
 
       </div>
     </div>

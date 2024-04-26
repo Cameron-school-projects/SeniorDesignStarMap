@@ -6,6 +6,7 @@ from dbHandler import *
 from pyHandler import *
 from flask_cors import CORS
 from flask import request
+import os.path
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -18,9 +19,12 @@ def server():
     time = request.json['time']
     bufToReturn = makeMap(time,date,lat,lon)
     return bufToReturn
-# createDatabase()
-# parseCSVStars()
-# addPlanets()
+
+if(not(os.path.isfile('stars.db'))):
+    createDatabase()
+    parseCSVStars()
+    addPlanets()
+
 # makeMap("10:00PM","01/05/2008","34-52-11.44N","86-58-29.82E")
 
        

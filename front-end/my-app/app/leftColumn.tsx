@@ -39,7 +39,7 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
     }
     //incorrect format entered, reset input and prompt to try again
     else {
-      console.error("incorrect format! Try again!")
+      alert("incorrect format! Try again!")
       setLatVal("")
       return false
     }
@@ -54,7 +54,7 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
     }
     //incorrect format entered, reset input and prompt to try again
     else {
-      console.log("incorrect format!")
+      alert("incorrect format!")
       setLonVal("")
       return false
     }

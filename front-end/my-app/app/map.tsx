@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 interface ImageBoxProps {
     imageUrl: string;
     altText: string;
@@ -7,9 +7,8 @@ interface ImageBoxProps {
 
 const ImageBox: React.FC<ImageBoxProps> = ({ imageUrl, altText }) => {
     const boxStyle = {
-        width: '800px', // Set the width of the box
+        width: '600px', // Set the width of the box
         height: '580px', // Set the height of the box
-        border: '2px solid black', // Optional: adds a border around the image box
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -23,9 +22,11 @@ const ImageBox: React.FC<ImageBoxProps> = ({ imageUrl, altText }) => {
     };
     
     return (
-        <div className="image-box" style={boxStyle}>
+        <TransformWrapper>
+            <TransformComponent>
             <img src={imageUrl} alt={altText} style={imgStyle}/>
-        </div>
+            </TransformComponent>
+        </TransformWrapper>
     );
 };
 

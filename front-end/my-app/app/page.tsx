@@ -59,14 +59,13 @@ export default function Home() {
       >
       <div className="LeftSideColumn">
 
-          <LeftColumn labelImageSet={setLabeledImage} unlabeledSet={setImage} setLabels={handleLabelSwap} imageToDownload={showLabels ? labeledImage : labeledImage} />
+          <LeftColumn labelImageSet={setLabeledImage} unlabeledSet={setImage} setLabels={handleLabelSwap} imageToDownload={showLabels ? image : labeledImage} />
 
       </div>
   
         {/* popup with helpful information */}
         <InfoDialog />
       </Grid>
-
 
       <Grid item xs={10}>
 

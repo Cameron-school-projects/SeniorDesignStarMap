@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@photo-sphere-viewer/core": "^5.7.3",
     "react-photo-sphere-viewer": "^5.0.2-psv5.7.1"
   }
 }

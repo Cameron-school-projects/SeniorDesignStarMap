@@ -13,6 +13,7 @@ pyqt5 = "*"
 flask = "*"
 flask-cors = "*"
 ephem = "*"
+pyastronomy = "*"
 
 [dev-packages]
 

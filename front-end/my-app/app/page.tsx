@@ -8,6 +8,7 @@ import { Box, Grid } from '@mui/material';
 import InfoDialog from "./info";
 import ImageBox from "./map";
 import { useState } from 'react';
+import icon from '../public/Logo.png'
 
 
 //import stars from '../images/starsky.jpg';
@@ -39,14 +40,9 @@ export default function Home() {
 
         <Grid container spacing={3}>
 
-        <Grid item xs={2} > 
+        <Grid item xs={12} marginBottom='1%' > 
         
-        <Image src={"./images/Logo.webp"} alt="logo" style={{
-
-        width:'100%',
-        height:"100%"
-
-        }}>  </Image>
+        <Image src={icon} alt="logo" width={50} height={50} ></Image>
         
         </Grid>
 

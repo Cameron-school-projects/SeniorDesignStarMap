@@ -141,16 +141,18 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={10}>
-          <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '10%' }}>
             <TextField label="Latitude" value={latVal} onChange={(e) => { setLatVal(e.target.value) }} style={{ height: '5vh', width: '100%', padding: '2px', fontFamily: 'monospace', fontSize: '15px',marginBottom:'10px' }}>Latitude</TextField>
+            </div>
             <label>Format: DDD-MM-SS.SS[N|S]</label>
-          </div>
+          
         </Grid>
         <Grid item xs={10}>
-          <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '10%' }}>
             <TextField label="Longitude" value={lonVal} onChange={(e) => { setLonVal(e.target.value) }} style={{ height: '5vh', width: '100%', padding: '2px', fontFamily: 'monospace', fontSize: '15px',marginBottom:'10px' }}>Longitude</TextField>
+            </div>
             <label>Format: DDD-MM-SS.SS[N|S]</label>
-          </div>
+          
         </Grid>
         <Grid item xs={10}>
           <div style={{ marginBottom: '20px' }}>

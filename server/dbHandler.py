@@ -1,7 +1,5 @@
 import sqlite3
-from starMath import checkStarVisibility
-connection =  sqlite3.connect("stars.db")
-cursor = connection.cursor()
+from starMath import checkConstellationVisibility, checkStarVisibility
 constellationReferences = {
     'Aries':[9257,6147,6195,6888],
     'Taurus':[18796,15108,14714,14183,14373,14710,18021,13110,11284],
@@ -14,11 +12,15 @@ constellationReferences = {
     'Sagittarius':[67811,67014,66393,67523,65228,64997,63828,64804],
     'Capricornus':[72769,74379,74748,76950,77585,78188,77773,76670,75605],
     'Aquarius':[74474,74803,77257,79284,79976,79334,80250,80644,80999,83242,82014,81843,82126],
-    'Pisces':[3909,4313,4011,4959,5731,6605,5510,4892,3437,2640,85716,84662,84008,83413,83938,84769]
+    'Pisces':[3909,4313,4011,4959,5731,6605,5510,4892,3437,2640,85716,84662,84008,83413,83938,84769],
+    'Little Dipper':[123],
+    'Big Dipper':[123]
     }
-consetllationLocations=[(2,19),(4,25),(7,18),(8,14),(11,17),(13,-3),(15,-13),(17,-32),(19,-32),(21,-21),(23,-13),(1,12)]
-# ,(4,25),(7,18),(8,14),(11,17),(13,-3),(15,-13),(17,-32),(19,-32),(21,-21),(23,-13),(1,12)
+consetllationLocations={'Aries':(2,19),'Taurus':(4,25),'Gemini':(7,18),'Cancer':(8,14),'Leo':(11,17),'Virgo':(13,-3),'Libra':(15,-13),'Scorpius':(17,-32),'Sagittarius':(19,-32),'Capricornus':(21,-21),'Aquarius':(23,-13),'Pisces':(1,12),'Little Dipper':(15,73),'Big Dipper':(10,48)}
+#Built up DB schema
 def createDatabase():
+    connection =  sqlite3.connect("stars.db")
+    cursor = connection.cursor()
     cursor.execute('''CREATE TABLE constellations(
                name STRING PRIMARY KEY,
                 dec DOUBLE,
@@ -55,13 +57,18 @@ def createDatabase():
                oScale DOUBLE,
                oProp DOUBLE,
                constellation STRING,
+               color STRING,
                FOREIGN KEY (constellation) REFERENCES constellations(name) 
     );''')
+    connection.commit()
+    close(connection,cursor)
 
-
+#parses csv of stars, and inserts them into the DB
 def parseCSVStars():
-    for idx,key in enumerate(constellationReferences):
-        params = [(key),(consetllationLocations[idx][0]),(consetllationLocations[idx][1])]
+    connection =  sqlite3.connect("stars.db")
+    cursor = connection.cursor()
+    for key in consetllationLocations:
+        params = [(key),(consetllationLocations[key][0]),(consetllationLocations[key][1])]
         cursor.execute("INSERT INTO CONSTELLATIONS(name,dec,RA) VALUES(?,?,?)",params)
     connection.commit()
 
@@ -74,18 +81,65 @@ def parseCSVStars():
                 newStar = [elements[0],elements[1],elements[2],elements[3],elements[4],elements[5],elements[6],elements[7],elements[8],elements[10],None,0]
                 cursor.execute("INSERT INTO stars VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",newStar)       
         connection.commit()
-    for key in constellationReferences:
-        for idx,item in enumerate(constellationReferences.get(key)):
-            print(idx+1)
-            print(item)
-            starToInsert = [(key),(idx+1),(item)]
-            cursor.execute("UPDATE stars SET constellation=?, constellationNum=? WHERE id=?",starToInsert)
+    # for key in constellationReferences:
+    #     for idx,item in enumerate(constellationReferences.get(key)):
+    #         starToInsert = [(key),(idx+1),(item)]
+    #         cursor.execute("UPDATE stars SET constellation=?, constellationNum=? WHERE id=?",starToInsert)
     connection.commit()
+    close(connection,cursor)
 
 
-def addStar():
-    #add in everything individually
-    return
+
+#adds all planets into DB
+def addPlanets():
+    connection =  sqlite3.connect("stars.db")
+    cursor = connection.cursor()
+    planetVals = {"Mercury": [252.25084,538101628.3,0.38709893,0.00000066,0.20563069,0.00002527,7.00487,23.51,77.45645,573.57,48.33167,446.3,'pink'],
+                  "Venus":[181.97973,210664136.1,0.72333199,0.00000092,0.00677323,0.00004938,3.39471,2.86,131.53298,108.8,76.68069,996.89,'white'],
+                  "Earth":[100.46435,129597740.6,1.00000011,0.00000005,0.01671022,0.00003804,0.00005,46.94,102.94719,1198.28,-11.26064,18228.25,'blue'],
+                  "Mars":	[55.45332,68905103.78,1.52366231,0.00007221,0.09341233,0.00011902,1.85061,25.47,336.04084,1560.78,49.57854,1020.19,'red'],
+                  "Jupiter":	[34.40438,10925078.35,5.20336301,0.00060737,0.04839266,0.0001288,1.3053,-4.15,14.75385,839.93,100.55615,1217.17,'whitesmoke'],
+                  "Saturn":	[49.94432,4401052.95,9.53707032,0.0030153,0.0541506,0.00036762,2.48446,6.11,92.43194,1948.89,113.71504,1591.05,'gold'],
+                   "Uranus":	[313.23218,1542547.79,19.19126393,0.00152025,0.04716771,0.0001915,0.76986,2.09,170.96424,1312.56,74.22988,1681.4,'lightblue'],
+                   "Neptune":	[304.88003,786449.21,30.06896348,0.00125196,0.00858587,0.00125196,1.76917,3.64,44.97135,844.43,131.72169,151.25,'steelblue'],
+                   "Pluto":	[238.92881,522747.9,39.48168677,0.00076912,0.24880766,0.00006465,17.14175,11.07,224.06676,132.25,110.30347,37.33,'powderblue'],
+                   "Sun":[100.46435,129597740.6,1.00000011,0.00000005,0.01671022,0.00003804,0.00005,46.94,102.94719,1198.28,-11.26064,18228.25,'darkorange'],
+                  }
+    for idx,key in enumerate(planetVals):
+        tempVals = [idx,key,planetVals[key][0],planetVals[key][1],planetVals[key][2],planetVals[key][3],planetVals[key][4],planetVals[key][5],planetVals[key][6],planetVals[key][7],planetVals[key][8],planetVals[key][9],planetVals[key][10],planetVals[key][11],None,planetVals[key][12]]
+        cursor.execute("INSERT INTO planets(id,planetName,lScale,lProp,aScale,aConst,eScale,eProp,iScale,iProp,wScale,wProp,oScale,oProp,constellation,color) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",tempVals)
+
+    connection.commit()
+    close(connection,cursor)
+
+
+#Gets all planets, and compiles the relevant info
+#returns dictionary with planet name as key and value of array with 
+# planet[0]=lScale, 
+# planet[1]=lProp,
+# planet[2]= aScale,
+# planet[3]= aConst,
+# planet[4]= eScale,
+# planet[5]= eProp,
+# planet[6]= iScale,
+# planet[7] = iProp,
+# planet[8] = wScale,
+# planet[9] = wProp,
+# planet[10]= oScale,
+# planet[11]= oProp,
+# planet[12] = constellation STRING,
+# planet[13] = color
+def getAllPlanetData():
+    connection =  sqlite3.connect("stars.db")
+    cursor = connection.cursor()
+    planetDict = {}
+    planets = cursor.execute("SELECT * FROM planets")
+    planets = planets.fetchall()
+    for planet in planets:
+        planetDict[planet[1]] = [planet[2],planet[3],planet[4],planet[5],planet[6],planet[7],planet[8],planet[9],planet[10],planet[11],planet[12],planet[13],planet[15]]
+    connection.commit()
+    close(connection,cursor)
+    return planetDict
 
 
 #closes database
@@ -99,7 +153,7 @@ def close(connectionName, cursorName = False):
 #Returns all stars visible to specific latitude and longitude 
 #Expects latitude/longitude to be in decimal        
 #When returning, python only returns values
-#the corresponding attributes are:
+#the corresponding star attributes are:
         #allStars[0] = id
         #allStars[1] = hip
         #allStars[2] = HD
@@ -111,46 +165,22 @@ def close(connectionName, cursorName = False):
         #allStars[8] = dec
         #allStars[9] = magnitude
         #allStars[10] = constellation(if applicable)
-def getAllVisibleStars(observerLat,observerLong,LST):
-    queryString=""
-    observerDec = observerLat
-    observerRA = LST    
-    if(observerLat<0):
-        queryString = "SELECT * FROM stars WHERE (dec + ? ) < -90"
-    else:
-        queryString = "SELECT * FROM stars WHERE (dec + ?) > 90"
-    # build query based on lat/long of observer
-    # if(observerLong<0):        
-    #     queryString = "SELECT * FROM stars WHERE RA BETWEEN ? AND 0"
-    # else:
-    #     #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
-    #     queryString = "SELECT * FROM stars WHERE RA BETWEEN ? AND 24"
-    # if(observerLat<0):        
-    #     visibleLong2=(90+observerLat)
-    #     visibleLong1 = (90-observerLat)
-    #     tempLong =visibleLong2%180 
-    #     if(-tempLong!=visibleLong2):
-    #         visibleLong2=tempLong
-    #     tempLong = visibleLong1%180
-    #     if(-tempLong!=visibleLong1):
-    #         visibleLong1=tempLong
-    #     queryString = queryString+" AND dec BETWEEN ? AND ? ORDER BY constellationNum"
-    # else:
-        
-    #     visibleLong1=(90-observerLat)
-    #     visibleLong2 = (90+observerLat)
-    #     tempLong =visibleLong1%180 
-    #     if(tempLong!=visibleLong1 or -tempLong!=visibleLong1):
-    #         visibleLong1=-tempLong
-    #     tempLong = visibleLong2%180
-    #     if(tempLong!=visibleLong2):
-    #         visibleLong2=tempLong
-    #     queryString = queryString+" AND dec BETWEEN ? AND ? ORDER BY constellationNum"
-    allParams = [(observerLat)]
-    #dont need to filter on magnitude, as when inserting we only add if magnitude is less than 6.0
-    allStars = cursor.execute(queryString,allParams)
+
+#and the corresponding constellation attributes are 
+#visibleConstellations[0] = name
+# visibleConstellations[1] = RA
+# visibleConstellations[2] = dec 
+def getAllVisibleObjects(observerLat,observerLong,LST):
+    connection =  sqlite3.connect("stars.db")
+    cursor = connection.cursor()
+    allStars = cursor.execute("SELECT * from stars WHERE properName!='Sol' ORDER BY constellationNum")
     allStars = allStars.fetchall()
+    allConstellations = cursor.execute("SELECT * FROM constellations")
+    allConstellations = allConstellations.fetchall()
+    visibleConstellations = checkConstellationVisibility(allConstellations,observerLat,LST)
     visibleStars = checkStarVisibility(allStars,observerLat,LST)
-    return visibleStars
+    close(connection,cursor)
+    return visibleStars,visibleConstellations
+
 
 

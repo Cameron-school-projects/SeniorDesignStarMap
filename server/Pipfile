@@ -4,13 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyramid = "*"
 tzwhere = "*"
 pytz = "*"
 astropy = "*"
 matplotlib = "*"
 timezonefinder = "*"
 pyqt5 = "*"
+flask = "*"
+flask-cors = "*"
+ephem = "*"
+pyastronomy = "*"
 
 [dev-packages]
 

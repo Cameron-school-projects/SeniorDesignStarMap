@@ -15,3 +15,11 @@ class TestStarMath(unittest.TestCase):
         baseDate = datetime(2008,1,5,20)
         JD = getJD(baseDate)
         self.assertAlmostEqual(JD,2454471)
+
+    def test_LST(self):
+        lat = 34.7304
+        long = 86.5861
+        baseTime = datetime(2024,4,20,7,30)
+        gst = GST(baseTime,lat,long)
+        LST = testLST(baseTime,gst,long)
+        self.assertAlmostEqual()

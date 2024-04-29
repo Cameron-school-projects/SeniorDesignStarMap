@@ -4,13 +4,14 @@ import React from 'react';
 import Button from './button';
 import axios, { isCancel, AxiosError } from 'axios';
 import TimePicker from 'react-time-picker';
-import { Box, TextField, Grid } from '@mui/material';
+import { Box, TextField, Grid, CircularProgress } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import Typography from '@mui/material/Typography';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 // The Left Column component requires the state setters for both possible star map images (labeled and unlabeled), the current image to download should the user request it,
@@ -29,6 +30,7 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
   const [timeVal, setTimeVal] = useState("10:00")
   const [dateVal, setDateVal] = useState(dayjs())
   const [dateString, setDateString] = useState(dayjs().format("MM/DD/YYYY"))
+  const [loading,setLoading] = useState(false)  
   //checks to make sure user entered latitude in correct format
   const checkLat = (val: string) => {
     //check if latitude is in correct format with regular expression
@@ -100,6 +102,7 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
   //post data to server
   function generateStarMap() {
     if(checkLat(latVal) && checkLon(lonVal)){
+      setLoading(true)
       let formattedTime = handleTimeValChange(timeVal)
       axios.post('http://localhost:5000/getStarData', {
 
@@ -110,6 +113,7 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
 
     })
       .then((response: any) => {
+        setLoading(false)
         //set both labeled and unlabeled images 
         let imageToDisplay = "data:image/png;base64," + response.data[0]
         unlabeledSet(imageToDisplay)
@@ -174,9 +178,12 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
           </div>
         </Grid>
         <Grid item xs={8}>
-          <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={generateStarMap}>
+          {!loading && (<Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={generateStarMap}>
             Map it!
-          </Button>
+          </Button>)}
+          {loading && (
+          <CircularProgress />
+        )}
         </Grid>
         <Grid item xs={8}>
           <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={handleLabels}>

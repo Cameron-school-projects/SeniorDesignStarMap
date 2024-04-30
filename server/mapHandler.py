@@ -7,27 +7,7 @@ from dbHandler import  *
 from starMath import *
 from mapPlot import *
 import numpy as np
-def checkDB():
-    try:
-        # Connect to DB and create a cursor
-        connection = sqlite3.connect('stars.db')
-        cursor = connection.cursor()
-        print('Database connection established.')
-
-        #only run if file is empty
-        if os.path.getsize("stars.db") == 0:
-            createDatabase()
-            print ("Table created.")
-            parseCSVStars()
-            connection.commit()
-                
-        
-        # Handle errors
-    except sqlite3.Error as error:
-        print('Error occurred - ', error)
-        close(connection)
-        return
-    
+#uses the moon coordinates, date, and Hour angle to find azimuth and elevation of moon
 def getMoonAzEL(obsLat,obsLong,JD,siderealTime):
     moonLat,moonLong = getMoonLocation(JD)
     changeInLon = moonLong - obsLong
@@ -37,7 +17,7 @@ def getMoonAzEL(obsLat,obsLong,JD,siderealTime):
     el = math.acos((math.sin(obsLat)*math.sin(moonLong))+(math.cos(obsLat)*math.cos(moonLong)*math.cos(siderealTime)))
     return az,el
 
-    
+#Finds visible objects, and calculates the azimuth and elevation, passing that information to the map function
 def makeMap(time, date, lat,lon):
     allStars = {'x':[],'y':[],'mag':[],'label':[],'color':[]}
     constellations = {}
@@ -56,11 +36,10 @@ def makeMap(time, date, lat,lon):
             tempVisibility = math.asin((math.sin(latDec)*math.sin(tempdec)+math.cos(latDec)*math.cos(tempdec)*math.cos(siderealTime)))
             if(tempVisibility>0):
                 tempaz,tempel = getPlanetAzEl(latDec,lonDec,tempra,tempdec,siderealTime)
-                # print(tempaz)
-                # print(tempel)
                 allStars['x'].append(tempaz)
                 allStars['y'].append(tempel)
                 allStars['color'].append(allPlanets[planet][12])
+                #suns magnitude is so big we need to diminish it 
                 if(planet=="Sun"):
                     allStars['mag'].append(10000)
                 else:
@@ -70,15 +49,8 @@ def makeMap(time, date, lat,lon):
     for star in allStarData:
         #pass in RA and Dec
         tempAz,tempEl = getStarAzEl(star[7],star[8],siderealTime,latDec,lonDec)
-        #suns magnitude is so big we need to diminish it 
         allStars['x'].append(tempAz)
         allStars['y'].append(tempEl)
-        # if(star[6]=='Sol'):
-        #     print("hello")
-        #     allStars['mag'].append((3 ** ( star[9]/ -2.5)))
-        #     allStars['color'].append('darkorange')
-        #     allStars['label'].append("Sun")
-        # else:
         allStars['mag'].append((100*10**(star[9]/-2.5)))
         allStars['color'].append('white')
 

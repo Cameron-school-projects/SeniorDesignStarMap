@@ -28,17 +28,6 @@ def mod2Pi(degree):
         A = 2*math.pi + A
     return A
 
-#converts julian date to normal date
-#assumes JD is a string representation of a julian date
-#returns string
-def getDate(JD):
-    #split to get year and day of year separably 
-    dateParts = JD.split("-")
-    dateYear = dateParts[0]
-    dayOfYear = dateParts[1]
-    #date will be time different between jan 1st of that year to passed in day of year
-    return (datetime(dateYear, 1, 1) + datetime.timedelta(dayOfYear - 1))
-
 #converts date to julian time
 #assumes that date is a string representing current date in mm/dd/yy or mm/dd/yyyy format 
 #returns string
@@ -65,23 +54,6 @@ def getUTC(lat, lon,date):
     timezone_str = timeZoneConverter.timezone_at(lng=lon, lat=lat)
     oldTimeZone = pytz.timezone(timezone_str)
     return oldTimeZone.localize(date).astimezone( utc )
-
-#return local sidereal time 
-#expects time to be in GST
-def getLST(time,lon):
-    dividedLon = lon/15
-    hours = int(dividedLon)
-    minutes = (dividedLon*60) % 60
-    seconds = (dividedLon*3600) % 60
-    #check if print(currentDate)long is west
-    if(lon<0):
-        LST = time - timedelta(hours=hours,minutes=minutes,seconds=seconds)
-    else:
-        LST = time + timedelta(hours=hours,minutes=minutes,seconds=seconds)
-    lstNumeric = int(LST.hour)
-    lstNumeric = lstNumeric+ (int(LST.minute)/10)
-    lstNumeric = lstNumeric+ (int(LST.second)/100)
-    return lstNumeric
 
 #returns mean sidereal time
 #converts from UTC/GMT
@@ -286,7 +258,7 @@ def testLST(date,GMST,Long):
     #Convert to the local sidereal time by adding the longitude (in hours) from the GMST.
     #(Hours = Degrees/15, Degrees = Hours*15)
     Long = Long/15      #Convert longitude to hours
-    LST = GMST+Long     #Fraction LST. If negative we want to add 24...
+    LST = GMST+Long     #Fraction LST. 
     if LST < 0:
         LST = LST +24
     LST = LST %24
@@ -295,6 +267,7 @@ def testLST(date,GMST,Long):
     LSThh = int(LST)
     LSTmm = int(LSTmm)
     LSTss = int(LSTss)    
+    #print for testing
     # print ('\nLocal Sidereal Time %s:%s:%s \n\n' %(LSThh, LSTmm, LSTss))
 
     return LST

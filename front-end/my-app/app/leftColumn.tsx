@@ -1,5 +1,4 @@
 'use client'
-import { shape } from 'prop-types';
 import React from 'react';
 import Button from './button';
 import axios, { isCancel, AxiosError } from 'axios';
@@ -11,7 +10,6 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import Typography from '@mui/material/Typography';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 // The Left Column component requires the state setters for both possible star map images (labeled and unlabeled), the current image to download should the user request it,
@@ -34,7 +32,7 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
   //checks to make sure user entered latitude in correct format
   const checkLat = (val: string) => {
     //check if latitude is in correct format with regular expression
-    const latRegex = new RegExp(/\d{1,3}-\d{1,2}-\d{1,2}.\d{1,2}(N|S)/gm)
+    const latRegex = new RegExp(/\d{1,3}-\d{1,2}-\d{1,2}(?:.\d{1,2})?(N|S)/gm)
     //if true, format is correct! 
     if (latRegex.test(val)) {
       return true
@@ -42,14 +40,13 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
     //incorrect format entered, reset input and prompt to try again
     else {
       alert("incorrect format! Try again!")
-      setLatVal("")
       return false
     }
   }
   //verifies longitude is in correct format 
   const checkLon = (val: string) => {
     //check if longitude is in correct format with regular expression
-    const latRegex = new RegExp(/\d{1,3}-\d{1,2}-\d{1,2}.\d{1,2}(E|W)/gm)
+    const latRegex = new RegExp(/\d{1,3}-\d{1,2}-\d{1,2}(?:.\d{1,2})?(E|W)/gm)
     //if true, format is correct! 
     if (latRegex.test(val)) {
       return true
@@ -57,7 +54,6 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
     //incorrect format entered, reset input and prompt to try again
     else {
       alert("incorrect format!")
-      setLonVal("")
       return false
     }
   }
@@ -119,12 +115,6 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
         unlabeledSet(imageToDisplay)
         imageToDisplay = "data:image/png;base64," + response.data[1]
         labelImageSet(imageToDisplay)
-        //reset user input
-        setLatVal("")
-        setLonVal("")
-        setDateVal(dayjs())
-        setDateString(dayjs().format('MM/DD/YYY'))
-        setTimeVal("10:00AM")
 
       })
       .catch((err:any)=>{
@@ -200,8 +190,4 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
   );
 };
 
-export default LeftColumn;
-
-/* <button style={{padding: '8px 16px', marginTop: '10px', color: 'white', borderRadius: '10px', height: '20px', }}>
-        Enter
-      </button> */
+export default LeftColumn;  

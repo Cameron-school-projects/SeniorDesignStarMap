@@ -1,5 +1,6 @@
 import sqlite3
 from starMath import checkConstellationVisibility, checkStarVisibility
+#list of constellations the star map will show
 constellationReferences = {
     'Aries':[9257,6147,6195,6888],
     'Taurus':[18796,15108,14714,14183,14373,14710,18021,13110,11284],
@@ -16,6 +17,7 @@ constellationReferences = {
     'Little Dipper':[123],
     'Big Dipper':[123]
     }
+#locations of constellations (RA and Dec)
 consetllationLocations={'Aries':(2,19),'Taurus':(4,25),'Gemini':(7,18),'Cancer':(8,14),'Leo':(11,17),'Virgo':(13,-3),'Libra':(15,-13),'Scorpius':(17,-32),'Sagittarius':(19,-32),'Capricornus':(21,-21),'Aquarius':(23,-13),'Pisces':(1,12),'Little Dipper':(15,73),'Big Dipper':(10,48)}
 #Built up DB schema
 def createDatabase():
@@ -81,10 +83,6 @@ def parseCSVStars():
                 newStar = [elements[0],elements[1],elements[2],elements[3],elements[4],elements[5],elements[6],elements[7],elements[8],elements[10],None,0]
                 cursor.execute("INSERT INTO stars VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",newStar)       
         connection.commit()
-    # for key in constellationReferences:
-    #     for idx,item in enumerate(constellationReferences.get(key)):
-    #         starToInsert = [(key),(idx+1),(item)]
-    #         cursor.execute("UPDATE stars SET constellation=?, constellationNum=? WHERE id=?",starToInsert)
     connection.commit()
     close(connection,cursor)
 

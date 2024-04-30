@@ -2,8 +2,6 @@
 
 import Image from "next/image";
 import LeftColumn from "./leftColumn";
-//import mapFrame from "./starmapDisplay";
-//import BoxSx from "./boxSection";
 import { Box, Grid } from '@mui/material';
 import InfoDialog from "./info";
 import ImageBox from "./map";
@@ -26,10 +24,10 @@ export default function Home() {
   //renders labeled/unlabeled map depending on current preference 
   function selectImage() {
     if (showLabels) {
-      return (<ImageBox imageUrl={labeledImage} altText="I mean it should be the starmap" />)
+      return (<ImageBox imageUrl={labeledImage} altText="Enter details and press 'map it!' To generate a star map" />)
     }
     else {
-      return (<ImageBox imageUrl={image} altText="I mean it should be the starmap" />)
+      return (<ImageBox imageUrl={image} altText="Enter details and press map it! To generate a star map" />)
 
     }
   }

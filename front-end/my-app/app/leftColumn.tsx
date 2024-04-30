@@ -1,10 +1,9 @@
 'use client'
-import { shape } from 'prop-types';
 import React from 'react';
 import Button from './button';
 import axios, { isCancel, AxiosError } from 'axios';
 import TimePicker from 'react-time-picker';
-import { Box, TextField, Grid } from '@mui/material';
+import { Box, TextField, Grid, CircularProgress } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -29,10 +28,11 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
   const [timeVal, setTimeVal] = useState("10:00")
   const [dateVal, setDateVal] = useState(dayjs())
   const [dateString, setDateString] = useState(dayjs().format("MM/DD/YYYY"))
+  const [loading,setLoading] = useState(false)  
   //checks to make sure user entered latitude in correct format
   const checkLat = (val: string) => {
     //check if latitude is in correct format with regular expression
-    const latRegex = new RegExp(/\d{1,3}-\d{1,2}-\d{1,2}.\d{1,2}(N|S)/gm)
+    const latRegex = new RegExp(/\d{1,3}-\d{1,2}-\d{1,2}(?:.\d{1,2})?(N|S)/gm)
     //if true, format is correct! 
     if (latRegex.test(val)) {
       return true
@@ -40,14 +40,13 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
     //incorrect format entered, reset input and prompt to try again
     else {
       alert("incorrect format! Try again!")
-      setLatVal("")
       return false
     }
   }
   //verifies longitude is in correct format 
   const checkLon = (val: string) => {
     //check if longitude is in correct format with regular expression
-    const latRegex = new RegExp(/\d{1,3}-\d{1,2}-\d{1,2}.\d{1,2}(E|W)/gm)
+    const latRegex = new RegExp(/\d{1,3}-\d{1,2}-\d{1,2}(?:.\d{1,2})?(E|W)/gm)
     //if true, format is correct! 
     if (latRegex.test(val)) {
       return true
@@ -55,7 +54,6 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
     //incorrect format entered, reset input and prompt to try again
     else {
       alert("incorrect format!")
-      setLonVal("")
       return false
     }
   }
@@ -100,6 +98,7 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
   //post data to server
   function generateStarMap() {
     if(checkLat(latVal) && checkLon(lonVal)){
+      setLoading(true)
       let formattedTime = handleTimeValChange(timeVal)
       axios.post('http://localhost:5000/getStarData', {
 
@@ -110,17 +109,12 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
 
     })
       .then((response: any) => {
+        setLoading(false)
         //set both labeled and unlabeled images 
         let imageToDisplay = "data:image/png;base64," + response.data[0]
         unlabeledSet(imageToDisplay)
         imageToDisplay = "data:image/png;base64," + response.data[1]
         labelImageSet(imageToDisplay)
-        //reset user input
-        setLatVal("")
-        setLonVal("")
-        setDateVal(dayjs())
-        setDateString(dayjs().format('MM/DD/YYY'))
-        setTimeVal("10:00AM")
 
       })
       .catch((err:any)=>{
@@ -174,9 +168,12 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
           </div>
         </Grid>
         <Grid item xs={8}>
-          <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={generateStarMap}>
+          {!loading && (<Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={generateStarMap}>
             Map it!
-          </Button>
+          </Button>)}
+          {loading && (
+          <CircularProgress />
+        )}
         </Grid>
         <Grid item xs={8}>
           <Button buttonStyle={{ color: 'gray', rounded: 'lg', size: 'md' }} onClick={handleLabels}>
@@ -193,8 +190,4 @@ const LeftColumn: React.FC<LeftColumnProps> = ({ labelImageSet, unlabeledSet, im
   );
 };
 
-export default LeftColumn;
-
-/* <button style={{padding: '8px 16px', marginTop: '10px', color: 'white', borderRadius: '10px', height: '20px', }}>
-        Enter
-      </button> */
+export default LeftColumn;  

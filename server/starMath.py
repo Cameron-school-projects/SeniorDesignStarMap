@@ -69,9 +69,7 @@ def getStarAzEl(ra, dec, time, lat, long):
     h = time-ra
     az = math.atan(-(math.sin(h) * math.cos(dec))/(math.cos(lat)*math.sin(dec) - math.sin(lat)*math.cos(dec)*math.cos(h)))
     el = math.asin(math.sin(lat)*math.sin(dec) + math.cos(lat)*math.cos(dec)*math.cos(h))
-    # az = 2*math.cos(az)
-    # el = 2*math.sin(el)
-    return az, el
+    return math.radians(az), math.radians(el)
 
 def getOrbitalElements(planetData, JD):
     #uses planet data to ccaulate orbital elements and 
@@ -254,7 +252,7 @@ def GST(date,lat,lon):
     # print ('\nLocal G Time %s:%s:%s \n\n' %(GMSThh, GMSTmm, GMSTss))
     return GMST
 
-def testLST(date,GMST,Long):
+def calcLST(date,GMST,Long):
     #Convert to the local sidereal time by adding the longitude (in hours) from the GMST.
     #(Hours = Degrees/15, Degrees = Hours*15)
     Long = Long/15      #Convert longitude to hours

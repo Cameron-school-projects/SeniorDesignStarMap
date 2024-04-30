@@ -1,9 +1,9 @@
 from wsgiref.simple_server import make_server
 from flask import Flask
 from dbHandler import *
-from server.mapHandler import *
+from mapHandler import *
 from dbHandler import *
-from server.mapHandler import *
+from mapHandler import *
 from flask_cors import CORS
 from flask import request
 import os.path

@@ -22,7 +22,7 @@ class TestStarMath(unittest.TestCase):
         long = 86.5861
         baseTime = datetime(2024,4,20,7,30)
         gst = GST(baseTime,lat,long)
-        LST = testLST(baseTime,gst,long)
+        LST = calcLST(baseTime,gst,long)
         print(LST)
         self.assertAlmostEqual(LST,19.17)
 
@@ -31,7 +31,7 @@ class TestStarMath(unittest.TestCase):
         long = 86.5861
         baseTime = datetime(2024,4,20,7,30)
         gst = GST(baseTime,lat,long)
-        LST = testLST(baseTime,gst,long)
+        LST = calcLST(baseTime,gst,long)
         az,el=getStarAzEl(10,10,LST,lat,long)
         self.assertAlmostEqual(az,.444)
         self.assertAlmostEqual(el,1.117)

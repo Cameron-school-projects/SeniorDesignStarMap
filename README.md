@@ -15,6 +15,7 @@
         -navigate to the /front-end/my-app directory
         -run `npm install` to ensure all dependencies are met
         - start the front end by running `npm run dev`
+        - App will be running at http://localhost:3000
 
 
 # Known Bugs

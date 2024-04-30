@@ -26,7 +26,7 @@ def makeMap(time, date, lat,lon):
     latDec = convertLatAndLong(lat)
     lonDec = convertLatAndLong(lon)
     GSTime = GST(currentDate,latDec,lonDec)
-    siderealTime = testLST(currentDate,GSTime,lonDec)
+    siderealTime = calcLST(currentDate,GSTime,lonDec)
     allStarData,allConstellations = getAllVisibleObjects(latDec,lonDec,siderealTime)
     allPlanets = getAllPlanetData()
     jd = getJD(getUTC(latDec,lonDec,currentDate))
